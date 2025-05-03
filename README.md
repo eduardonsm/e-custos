@@ -1,5 +1,23 @@
-# Login System MVVM
+# 💼 e-Custo$ — Sistema para Gerenciamento de Custos
 
-Este é um sistema de login desenvolvido em **Python** usando o padrão **MVVM**, com **PySide** para a interface gráfica e **SQLite** como banco de dados. O sistema permite que usuários se cadastrem, façam login e que administradores gerenciem outros usuários.
+Este é um sistema desenvolvido em Python utilizando o padrão **MVVM**, com **PySide6** para a interface gráfica e **SQLite** como banco de dados. O projeto foi desenvolvido como apoio para a disciplina de **Custos** do curso de **Engenharia de Produção** da **UFCG**.
 
+## 🎯 Objetivo
 
+Facilitar o acesso e controle de informações no contexto da disciplina de Custos.
+
+## 🔧 Tecnologias Utilizadas
+
+- 🐍 **Python 3.11+**
+- 🖼️ **PySide6** (interface gráfica)
+- 💾 **SQLite** (banco de dados local)
+- 🧠 **Padrão MVVM** (Model-View-ViewModel)
+- 📁 Estrutura modular com `model`, `view`, e `controller`
+
+## ✨ Funcionalidades
+
+- Cadastro de usuários
+- Login com validação
+- Armazenamento seguro em banco SQLite
+
+em desenvolvimento...
