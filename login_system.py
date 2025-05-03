@@ -3,6 +3,7 @@ import sqlite3
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
 from view.LoginWindow import LoginWindow
 from view.RegisterWindow import RegisterWindow
+from view.WelcomeWindow import Welcome
 # Configuração do banco de dados
 def create_db():
     conn = sqlite3.connect("model/LoginSystem.db")
@@ -38,9 +39,11 @@ class LoginApp(QWidget):
         
         self.login_window = LoginWindow(self.stacked_widget)
         self.register_window = RegisterWindow(self.stacked_widget)
+        self.welcome_page = Welcome(self.stacked_widget)
         
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
+        self.stacked_widget.addWidget(self.welcome_page)
         
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)

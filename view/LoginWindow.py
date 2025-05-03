@@ -42,6 +42,7 @@ class LoginWindow(QWidget):
       
         if UserRepository.authenticate_user(self):
             QMessageBox.information(self, "Sucesso", "Login realizado com sucesso!")
+            self.stacked_widget.setCurrentIndex(2)  
         else:
             QMessageBox.warning(self, "Erro", "Usuário ou senha incorretos!")
     
