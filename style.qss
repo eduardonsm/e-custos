@@ -6,8 +6,8 @@ QWidget {
 
 QLabel {
     font-size: 30px;
-    font-weight: bold;
-    color: #4CAF50;
+    font-weight: 500;
+    color: #8faadc;
     text-align: center;
     padding: 20px;
 }
@@ -21,11 +21,11 @@ QLineEdit {
 }
 
 QLineEdit:focus {
-    border-color: #4CAF50;
+    border-color: #8faadc;
 }
 
 QPushButton {
-    background-color: #4CAF50;
+    background-color: #4472c4;
     color: white;
     border: none;
     padding: 18px;
@@ -33,21 +33,42 @@ QPushButton {
     border-radius: 5px;
     cursor: pointer;
 }
-
 QPushButton:hover {
-    background-color: #45a049;
+    background-color:rgb(36, 85, 168);
 }
 
 QPushButton:pressed {
-    background-color: #388e3c;
+    background-color:rgb(24, 67, 143);
 }
 
 QPushButton:focus {
     outline: none;
 }
+QRadioButton{
+    background-color: #4472c4;
+    color: white;
+    border: none;
+    padding: 18px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+QRadioButton:hover {
+    background-color:rgb(36, 85, 168);
+}
+QRadioButton:checked {
+    background-color: #1f4e99; /* azul mais forte */
+}
 #loginFrame {
-        border: 2px solid #4CAF50;
+        border: 2px solid #4472c4;
         border-radius: 10px;
         padding: 30px;
         background-color: #ffffff;
-    }
+}
+#textButton{
+    font-size: 20px;
+    font-weight: 800;
+    color: #4472c4;
+    text-align: center;
+    padding: 5px;
+}

@@ -1,58 +1,136 @@
-from PySide6.QtWidgets import QFrame, QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QStackedWidget
-import sqlite3
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtGui import QIcon, QPixmap
+from components.CustomRadioButton import CustomRadioButton
+
 from PySide6.QtCore import Qt
 class Welcome(QWidget):
-    """
-    Tela de boas-vindas do sistema de login.
-    """
+    
+    # Tela de boas-vindas.
+
 
     def __init__(self, stacked_widget):
             super().__init__()
-
             layout = QVBoxLayout()
+
+
             #boas vindas
-            bemvindo = QLabel("Seja bem-vindo ao aplicativo!")
-            layout.addWidget(bemvindo, alignment=Qt.AlignmentFlag.AlignRight)
-            titulo = QLabel("Se você já sabe qual princípio e qual método utilizar, favor seleciona-los. Se não, clique no Guia $mart!")
-            layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignCenter)
-            #principio e metodo
-            principio = QLabel("Princípio:")
-            metodo = QLabel("Método:")
-            #botao de guia
-            guia = QPushButton("Guia $mart")
-            guia.setObjectName("guia")
-            guia.setStyleSheet("background-color: #4CAF50; color: red;")
-            guia.setFixedSize(100, 30)
+            h_layout = QHBoxLayout()
+            bemvindo = QLabel("SEJA BEM VINDO(A) AO E-CUSTO$ !")
+            h_layout.addWidget(bemvindo, alignment=Qt.AlignmentFlag.AlignLeft)
+            # ecusto = QLabel("e-custo$!")
+            icon = QLabel()
+            pixmap = QPixmap("./images/ecustos-logo.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            icon.setPixmap(pixmap)
+            icon.setAlignment(Qt.AlignCenter)
 
-            # guia.clicked.connect(self.show_guide)
+            # h_layout.addWidget(ecusto, alignment=Qt.AlignmentFlag.AlignRight)
+            h_layout.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
 
-            #botao de sair
-            sair = QPushButton("Sair")
-            sair.setObjectName("sair")
-            sair.setStyleSheet("background-color: #f44336; color: white;")
-            sair.setFixedSize(100, 30)
-            # sair.clicked.connect(self.close)
+            container = QWidget()
+            container.setLayout(h_layout)
+            layout.addWidget(container)
+
+
+            titulo = QLabel('Se você já sabe qual princípio e qual método utilizar, favor selecioná-los. Se não, clique no <a href="#" style="color: #8faadc;font-weight: 800;">Guia $mart!</a>')
+            titulo.setWordWrap(True)
+            titulo.setAlignment(Qt.AlignCenter)
+            titulo.setOpenExternalLinks(False)  
+            titulo.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            titulo.setTextFormat(Qt.RichText)
+            titulo.linkActivated.connect(lambda: print("Link clicado!"))  # Conecta o clique do link a uma função
+            titulo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            layout.addWidget(titulo)
+
             
-            #botao de voltar
-            voltar = QPushButton("Voltar")
-            voltar.setObjectName("voltar")
-            voltar.setStyleSheet("background-color: #2196F3; color: white;")
-            voltar.setFixedSize(100, 30)
-            # voltar.clicked.connect(self.voltar_login)
-           
-            #botao de proximo
-            proximo = QPushButton("Próximo")
-            proximo.setObjectName("proximo")
-            proximo.setStyleSheet("background-color: #2196F3; color: white;")
-            proximo.setFixedSize(100, 30)
-            # proximo.clicked.connect(self.proximo)
 
-            #adicionando os botoes ao layout
-            layout.addWidget(principio, alignment=Qt.AlignmentFlag.AlignLeft)
-            layout.addWidget(metodo, alignment=Qt.AlignmentFlag.AlignLeft)
-            layout.addWidget(guia, alignment=Qt.AlignmentFlag.AlignLeft)
-            layout.addWidget(sair, alignment=Qt.AlignmentFlag.AlignLeft)
-            layout.addWidget(voltar, alignment=Qt.AlignmentFlag.AlignLeft)
-            layout.addWidget(proximo, alignment=Qt.AlignmentFlag.AlignLeft)
+            # separando
+            line = QFrame()
+            line.setFrameShape(QFrame.HLine)
+            line.setFrameShadow(QFrame.Sunken)
+            line.setStyleSheet("color: blue; background-color: blue; height: 3px;")
+            layout.addWidget(line)
+
+            #principio
+            principio = QLabel("Princípio:")
+            # Radio buttons
+            radio1 = QRadioButton("Integral")
+            icon = QIcon("./images/integral.png")
+            radio1.setIcon(icon)
+            radio1.setIconSize(radio1.sizeHint()) 
+            radio2 = QRadioButton("Variável")
+            icon = QIcon("./images/variavel.png")
+            radio2.setIcon(icon)
+            radio2.setIconSize(radio2.sizeHint()) 
+            radio3 = QRadioButton("Ideal")
+            icon = QIcon("./images/ideal.png")
+            radio3.setIcon(icon)
+            radio3.setIconSize(radio3.sizeHint()) 
+
+            # Agrupar os botões para garantir seleção única
+            group = QButtonGroup()
+            group.addButton(radio1)
+            group.addButton(radio2)
+            group.addButton(radio3)
+
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(principio)
+            h_layout.addWidget(radio1)
+            h_layout.addWidget(radio2)
+            h_layout.addWidget(radio3)
+
+            container = QWidget()
+            container.setLayout(h_layout)
+            layout.addWidget(container)
+
+            # separando
+            line = QFrame()
+            line.setFrameShape(QFrame.HLine)
+            line.setFrameShadow(QFrame.Sunken)
+            line.setStyleSheet("color: blue; background-color: blue; height: 3px;")
+            layout.addWidget(line)
+
+            # metodo
+            metodo = QLabel("Princípio:")
+            radio1 = CustomRadioButton("Simples","./images/simples.png")
+            radio2 = CustomRadioButton("RKW","./images/rkw.png")
+            radio3 = CustomRadioButton("UEP","./images/uep.png")
+             
+            radio4 = CustomRadioButton("ABC","./images/abc.png")
+ 
+            radio5 = CustomRadioButton("TDABC","./images/tdabc.png")
+ 
+            radio6 = CustomRadioButton("Gecon","./images/gecon.png")
+            group = QButtonGroup()
+            group.addButton(radio1.radio)
+            group.addButton(radio2.radio)
+            group.addButton(radio3.radio)
+            group.addButton(radio4.radio)
+            group.addButton(radio5.radio)
+            group.addButton(radio6.radio)
+
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(metodo)
+            h_layout.addWidget(radio1)
+            h_layout.addWidget(radio2)
+            h_layout.addWidget(radio3)
+            h_layout.addWidget(radio4)
+            h_layout.addWidget(radio5)
+            h_layout.addWidget(radio6)
+
+            container = QWidget()
+            container.setLayout(h_layout)
+            layout.addWidget(container)
+            
+            
+
+            #botao de selecionar
+            selecionar = QPushButton("SELECIONAR")
+            selecionar.setStyleSheet("background-color: #2196F3; color: white;")
+
+            layout.addWidget(selecionar, alignment=Qt.AlignmentFlag.AlignRight)
+
             #adicionando o layout ao widget
+            layout.setContentsMargins(20, 20, 20, 20)  # Margens internas
+            layout.setSpacing(10)
             self.setLayout(layout)
