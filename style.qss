@@ -11,6 +11,20 @@ QLabel {
     text-align: center;
     padding: 20px;
 }
+#pergunta {
+    font-size: 40px;
+    font-weight: 600;
+    color:rgb(77, 124, 211);
+    text-align: left;
+    padding: 10px;
+}
+#titulo {
+    font-size: 45px;
+    font-weight: 700;
+    color:rgb(77, 124, 211);
+    text-align: left;
+    padding: 10px;
+}
 
 QLineEdit {
     padding: 10px;

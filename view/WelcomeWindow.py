@@ -11,20 +11,20 @@ class Welcome(QWidget):
 
     def __init__(self, stacked_widget):
             super().__init__()
+            self.stacked_widget = stacked_widget
             layout = QVBoxLayout()
 
 
             #boas vindas
             h_layout = QHBoxLayout()
             bemvindo = QLabel("SEJA BEM VINDO(A) AO E-CUSTO$ !")
+            bemvindo.setObjectName("titulo")
             h_layout.addWidget(bemvindo, alignment=Qt.AlignmentFlag.AlignLeft)
-            # ecusto = QLabel("e-custo$!")
             icon = QLabel()
             pixmap = QPixmap("./images/ecustos-logo.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon.setPixmap(pixmap)
             icon.setAlignment(Qt.AlignCenter)
 
-            # h_layout.addWidget(ecusto, alignment=Qt.AlignmentFlag.AlignRight)
             h_layout.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
 
             container = QWidget()
@@ -38,7 +38,7 @@ class Welcome(QWidget):
             titulo.setOpenExternalLinks(False)  
             titulo.setTextInteractionFlags(Qt.TextBrowserInteraction)
             titulo.setTextFormat(Qt.RichText)
-            titulo.linkActivated.connect(lambda: print("Link clicado!"))  # Conecta o clique do link a uma função
+            titulo.linkActivated.connect(lambda: self.switch_to_guia())  # Conecta o clique do link a uma função
             titulo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             layout.addWidget(titulo)
 
@@ -48,7 +48,7 @@ class Welcome(QWidget):
             line = QFrame()
             line.setFrameShape(QFrame.HLine)
             line.setFrameShadow(QFrame.Sunken)
-            line.setStyleSheet("color: blue; background-color: blue; height: 3px;")
+            line.setStyleSheet("color: #8faadc; background-color: #8faadc; height: 3px;")
             layout.addWidget(line)
 
             #principio
@@ -87,7 +87,7 @@ class Welcome(QWidget):
             line = QFrame()
             line.setFrameShape(QFrame.HLine)
             line.setFrameShadow(QFrame.Sunken)
-            line.setStyleSheet("color: blue; background-color: blue; height: 3px;")
+            line.setStyleSheet("color: #8faadc; background-color: #8faadc; height: 3px;")
             layout.addWidget(line)
 
             # metodo
@@ -134,3 +134,6 @@ class Welcome(QWidget):
             layout.setContentsMargins(20, 20, 20, 20)  # Margens internas
             layout.setSpacing(10)
             self.setLayout(layout)
+    def switch_to_guia(self):
+        # Função para mudar para a tela do guia
+        self.stacked_widget.setCurrentIndex(3)

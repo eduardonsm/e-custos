@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QFrame, QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QStackedWidget
 import sqlite3
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 from model.UserRepository import UserRepository
 
 class LoginWindow(QWidget):
@@ -12,7 +13,11 @@ class LoginWindow(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
-        self.label = QLabel("Bem-vindo ao Sistema de Login")
+        self.label = QLabel()
+        pixmap = QPixmap("./images/ecustos-logo.png").scaled(400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.label.setPixmap(pixmap)
+        self.label.setAlignment(Qt.AlignCenter)
+        mensagem = QLabel("Entre ou Cadastre-se")
 
         input_container = QFrame()
         input_container.setObjectName("loginFrame")
@@ -32,6 +37,7 @@ class LoginWindow(QWidget):
         self.register_button.clicked.connect(self.switch_to_register)
         
         layout.addWidget(self.label, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(mensagem, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(input_container)
         layout.addWidget(self.login_button)
         layout.addWidget(self.register_button)
