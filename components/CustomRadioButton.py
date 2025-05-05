@@ -4,20 +4,20 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import Qt, QSize
 
-
 class CustomRadioButton(QWidget):
-    def __init__(self, text, image_path, parent=None):
+    def __init__(self, text, image_path, group: QButtonGroup,id: int, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
 
         # RadioButton (apenas icone)
         self.radio = QRadioButton()
+        group.addButton(self.radio, id)
         icon = QIcon(image_path)
         self.radio.setIcon(icon)
         self.radio.setMinimumSize(80, 80)
         self.radio.setIconSize(QSize(50, 50))
-        self.radio.setAutoExclusive(False)  # Se quiser desmarcar manualmente depois
+        # self.radio.setAutoExclusive(False)  # Se quiser desmarcar manualmente depois
         
         # texto (em baixo)
         image_label = QLabel(text)

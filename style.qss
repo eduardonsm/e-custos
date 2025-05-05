@@ -62,7 +62,7 @@ QRadioButton{
     background-color: #4472c4;
     color: white;
     border: none;
-    padding: 18px;
+    padding: 10px;
     font-size: 18px;
     border-radius: 10px;
     cursor: pointer;

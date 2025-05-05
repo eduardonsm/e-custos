@@ -92,22 +92,14 @@ class Welcome(QWidget):
 
             # metodo
             metodo = QLabel("Princípio:")
-            radio1 = CustomRadioButton("Simples","./images/simples.png")
-            radio2 = CustomRadioButton("RKW","./images/rkw.png")
-            radio3 = CustomRadioButton("UEP","./images/uep.png")
-             
-            radio4 = CustomRadioButton("ABC","./images/abc.png")
- 
-            radio5 = CustomRadioButton("TDABC","./images/tdabc.png")
- 
-            radio6 = CustomRadioButton("Gecon","./images/gecon.png")
-            group = QButtonGroup()
-            group.addButton(radio1.radio)
-            group.addButton(radio2.radio)
-            group.addButton(radio3.radio)
-            group.addButton(radio4.radio)
-            group.addButton(radio5.radio)
-            group.addButton(radio6.radio)
+            group = QButtonGroup(self)
+            radio1 = CustomRadioButton("Simples","./images/simples.png",group,1)
+            radio2 = CustomRadioButton("RKW","./images/rkw.png",group,2)
+            radio3 = CustomRadioButton("UEP","./images/uep.png",group,3)
+            radio4 = CustomRadioButton("ABC","./images/abc.png",group,4)
+            radio5 = CustomRadioButton("TDABC","./images/tdabc.png",group,5)
+            radio6 = CustomRadioButton("Gecon","./images/gecon.png",group,6)
+            group.setExclusive(True)
 
             h_layout = QHBoxLayout()
             h_layout.addWidget(metodo)

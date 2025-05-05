@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
 
 from PySide6.QtCore import Qt
-class Pergunta1Window(QWidget):
+class Pergunta2Window(QWidget):
 
     def __init__(self, stacked_widget):
             super().__init__()
@@ -34,7 +34,7 @@ class Pergunta1Window(QWidget):
 
             # main
             h_layout = QHBoxLayout()
-            pergunta = QLabel('Qual setor econômico pertence sua atividade produtiva?')
+            pergunta = QLabel('Quanto à disponibilidade de estoque e sua relação com a produção, o sem ambiente produtivo se encaixa em:')
             pergunta.setObjectName("pergunta")
             pergunta.setWordWrap(True)
             pergunta.setOpenExternalLinks(False)  
@@ -45,19 +45,21 @@ class Pergunta1Window(QWidget):
 
             #radio buttons
             radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Primário (extrativismo, agropecuária, etc.)")
-            radio2 = QRadioButton("Secundário (indústria em geral, etc.)")
-            radio3 = QRadioButton("Terciário (serviços, comércio, etc.)")
-            radio4 = QRadioButton("Quaternário (informação, inovação, etc.)")
-            radio5 = QRadioButton("Não sei responder")
+            radio1 = QRadioButton("Produção para formar estoque (MTS)")
+            radio2 = QRadioButton("Produção sob encomenda (MTO)")
+            radio3 = QRadioButton("Montagem sob encomenda (ATO)")
+            radio4 = QRadioButton("Produção sob projeto (ETO)")
+            radio5 = QRadioButton("Entrega sob encomenda (DTO)")
+            radio6 = QRadioButton("Não sei responder")
+            
 
             radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio3, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio4, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio5, alignment=Qt.AlignmentFlag.AlignLeft)
+            radio_layout.addWidget(radio6, alignment=Qt.AlignmentFlag.AlignLeft)
 
-            # radio_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             radio_layout.setContentsMargins(0, 0, 0, 0)
             radio_layout.setSpacing(20)
             radio_group = QButtonGroup(self)
@@ -66,6 +68,7 @@ class Pergunta1Window(QWidget):
             radio_group.addButton(radio3, 3)
             radio_group.addButton(radio4, 4)
             radio_group.addButton(radio5, 5)
+            radio_group.addButton(radio6, 6)
             radio_group.setExclusive(True)
 
             container = QWidget()
@@ -104,6 +107,6 @@ class Pergunta1Window(QWidget):
             layout.setSpacing(10)
             self.setLayout(layout)
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(3)
+        self.stacked_widget.setCurrentIndex(4)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(5)
+        self.stacked_widget.setCurrentIndex(6)

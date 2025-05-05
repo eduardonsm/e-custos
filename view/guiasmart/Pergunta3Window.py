@@ -1,9 +1,8 @@
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
-
 from PySide6.QtCore import Qt
-class Pergunta1Window(QWidget):
+class Pergunta3Window(QWidget):
 
     def __init__(self, stacked_widget):
             super().__init__()
@@ -17,7 +16,7 @@ class Pergunta1Window(QWidget):
 
             h_layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignLeft)
             icon = QLabel()
-            pixmap = QPixmap("./images/ecustos-logo.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = QPixmap("./images/ecustos-logo.png").scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon.setPixmap(pixmap)
             icon.setAlignment(Qt.AlignCenter)
             h_layout.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
@@ -33,46 +32,46 @@ class Pergunta1Window(QWidget):
             layout.addWidget(line)
 
             # main
-            h_layout = QHBoxLayout()
-            pergunta = QLabel('Qual setor econômico pertence sua atividade produtiva?')
+            v_layout = QVBoxLayout()
+            pergunta = QLabel('Qual desses tipos de tecnologias de produção o seu ambiente mais se enquadra?')
             pergunta.setObjectName("pergunta")
             pergunta.setWordWrap(True)
-            pergunta.setOpenExternalLinks(False)  
-            pergunta.setTextInteractionFlags(Qt.TextBrowserInteraction)
-            pergunta.setTextFormat(Qt.RichText)
             pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            h_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignLeft)           
+            v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)           
 
             #radio buttons
             radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Primário (extrativismo, agropecuária, etc.)")
-            radio2 = QRadioButton("Secundário (indústria em geral, etc.)")
-            radio3 = QRadioButton("Terciário (serviços, comércio, etc.)")
-            radio4 = QRadioButton("Quaternário (informação, inovação, etc.)")
-            radio5 = QRadioButton("Não sei responder")
+            radio_group = QButtonGroup(self)
+            radio1 = QRadioButton("Produção tradicional: métodos manuais e/ou parcialmente mecanizados, com alta importância do trabalho humano")
+            radio2 = QRadioButton("Produção automatizada: maior uso de máquinas e equipamentos automatizados, produção rápida, eficiente, com inserção de controles para automação")
+            radio3 = QRadioButton("Produção avançada: uso de tecnologias avançadas, tais como manufatura aditiva, sistemas inteligentes e robóticos, internet das coisas, etc.")
+            radio4 = QRadioButton("Produção sustentável: foco em processo com baixo impacto ambiental, eficiente uso dos recursos, baixa geração de resíduos, economia circular, etc")
+            radio5 = QRadioButton("Produção flexível: as máquinas e equipamentos são configurados para alta adaptação à demanda. ")
+            radio6 = QRadioButton("Não sei responder")
+            
 
             radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio3, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio4, alignment=Qt.AlignmentFlag.AlignLeft)
             radio_layout.addWidget(radio5, alignment=Qt.AlignmentFlag.AlignLeft)
+            radio_layout.addWidget(radio6, alignment=Qt.AlignmentFlag.AlignLeft)
 
-            # radio_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             radio_layout.setContentsMargins(0, 0, 0, 0)
-            radio_layout.setSpacing(20)
-            radio_group = QButtonGroup(self)
+            radio_layout.setSpacing(10)
             radio_group.addButton(radio1, 1)
             radio_group.addButton(radio2, 2)
             radio_group.addButton(radio3, 3)
             radio_group.addButton(radio4, 4)
             radio_group.addButton(radio5, 5)
+            radio_group.addButton(radio6, 6)
             radio_group.setExclusive(True)
 
             container = QWidget()
             container.setLayout(radio_layout)
-            h_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
             main_container = QWidget()
-            main_container.setLayout(h_layout)
+            main_container.setLayout(v_layout)
             layout.addWidget(main_container)
 
             # separando
@@ -104,6 +103,6 @@ class Pergunta1Window(QWidget):
             layout.setSpacing(10)
             self.setLayout(layout)
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(3)
-    def avancar(self):
         self.stacked_widget.setCurrentIndex(5)
+    def avancar(self):
+        self.stacked_widget.setCurrentIndex(7)

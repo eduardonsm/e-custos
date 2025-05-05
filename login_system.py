@@ -7,6 +7,8 @@ from view.RegisterWindow import RegisterWindow
 from view.WelcomeWindow import Welcome
 from view.guiasmart.GuiaWindow import GuiaWindow
 from view.guiasmart.Pergunta1Window import Pergunta1Window
+from view.guiasmart.Pergunta2Window import Pergunta2Window
+from view.guiasmart.Pergunta3Window import Pergunta3Window
 
 
 # Configuração do banco de dados
@@ -47,12 +49,17 @@ class LoginApp(QWidget):
         self.welcome_page = Welcome(self.stacked_widget)
         self.guia_window = GuiaWindow(self.stacked_widget)
         self.pergunta1_window = Pergunta1Window(self.stacked_widget)
+        self.pergunta2_window = Pergunta2Window(self.stacked_widget)
+        self.pergunta3_window = Pergunta3Window(self.stacked_widget)
+
         
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
         self.stacked_widget.addWidget(self.welcome_page)
         self.stacked_widget.addWidget(self.guia_window)
         self.stacked_widget.addWidget(self.pergunta1_window)
+        self.stacked_widget.addWidget(self.pergunta2_window)
+        self.stacked_widget.addWidget(self.pergunta3_window)
         
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
