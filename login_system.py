@@ -9,6 +9,7 @@ from view.guiasmart.GuiaWindow import GuiaWindow
 from view.guiasmart.Pergunta1Window import Pergunta1Window
 from view.guiasmart.Pergunta2Window import Pergunta2Window
 from view.guiasmart.Pergunta3Window import Pergunta3Window
+from view.guiasmart.Pergunta4Window import Pergunta4Window
 
 
 # Configuração do banco de dados
@@ -51,6 +52,7 @@ class LoginApp(QWidget):
         self.pergunta1_window = Pergunta1Window(self.stacked_widget)
         self.pergunta2_window = Pergunta2Window(self.stacked_widget)
         self.pergunta3_window = Pergunta3Window(self.stacked_widget)
+        self.pergunta4_window = Pergunta4Window(self.stacked_widget)
 
         
         self.stacked_widget.addWidget(self.login_window)
@@ -60,6 +62,7 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.pergunta1_window)
         self.stacked_widget.addWidget(self.pergunta2_window)
         self.stacked_widget.addWidget(self.pergunta3_window)
+        self.stacked_widget.addWidget(self.pergunta4_window)
         
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
