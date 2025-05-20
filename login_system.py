@@ -10,6 +10,9 @@ from view.guiasmart.Pergunta1Window import Pergunta1Window
 from view.guiasmart.Pergunta2Window import Pergunta2Window
 from view.guiasmart.Pergunta3Window import Pergunta3Window
 from view.guiasmart.Pergunta4Window import Pergunta4Window
+from view.guiasmart.Pergunta5Window import Pergunta5Window
+from view.guiasmart.Pergunta6Window import Pergunta6Window
+from view.guiasmart.Pergunta7Window import Pergunta7Window
 
 
 # Configuração do banco de dados
@@ -53,8 +56,10 @@ class LoginApp(QWidget):
         self.pergunta2_window = Pergunta2Window(self.stacked_widget)
         self.pergunta3_window = Pergunta3Window(self.stacked_widget)
         self.pergunta4_window = Pergunta4Window(self.stacked_widget)
+        self.pergunta5_window = Pergunta5Window(self.stacked_widget)
+        self.pergunta6_window = Pergunta6Window(self.stacked_widget)
+        self.pergunta7_window = Pergunta7Window(self.stacked_widget)
 
-        
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
         self.stacked_widget.addWidget(self.welcome_page)
@@ -63,7 +68,10 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.pergunta2_window)
         self.stacked_widget.addWidget(self.pergunta3_window)
         self.stacked_widget.addWidget(self.pergunta4_window)
-        
+        self.stacked_widget.addWidget(self.pergunta5_window)
+        self.stacked_widget.addWidget(self.pergunta6_window)
+        self.stacked_widget.addWidget(self.pergunta7_window)
+
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
         self.setLayout(layout)
