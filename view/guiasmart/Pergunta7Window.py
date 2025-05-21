@@ -38,14 +38,16 @@ class Pergunta7Window(QWidget):
             pergunta.setObjectName("pergunta")
             pergunta.setWordWrap(True)
             pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            pergunta.setStyleSheet("font-size: 30px;")  # Definindo o tamanho da fonte
             v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)
-
+            label = QLabel("Volume produzido")
             slider = QSlider(Qt.Horizontal)
             slider.setRange(0, 100)
             slider.setValue(50)
             slider.setTickPosition(QSlider.TicksBelow)
             slider.setTickInterval(10)
             slider.setFixedWidth(150)
+            v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
             v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
 
             #slider container
@@ -83,8 +85,7 @@ class Pergunta7Window(QWidget):
             slider_container.addWidget(self.slider2)
             slider_container.addWidget(self.max_label)
 
-            self.value_label = QLabel("Valor atual: 50%")
-            self.slider1.valueChanged.connect(self.update_label)
+            self.value_label = QLabel("Visibilidade")
             self.value_label.setAlignment(Qt.AlignCenter)
 
             v_layout.addLayout(slider_container)
@@ -161,5 +162,4 @@ class Pergunta7Window(QWidget):
         self.stacked_widget.setCurrentIndex(9)
     def avancar(self):
         self.stacked_widget.setCurrentIndex(11)
-    def update_label(self, value):
-        self.value_label.setText(f"Valor atual: {value}%")
+    

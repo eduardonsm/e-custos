@@ -91,7 +91,7 @@ class Welcome(QWidget):
             layout.addWidget(line)
 
             # metodo
-            metodo = QLabel("Princípio:")
+            metodo = QLabel("Método:")
             group = QButtonGroup(self)
             radio1 = CustomRadioButton("Simples","./images/simples.png",group,1)
             radio2 = CustomRadioButton("RKW","./images/rkw.png",group,2)

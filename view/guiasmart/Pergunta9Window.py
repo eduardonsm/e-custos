@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QFrame, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
+from PySide6.QtWidgets import QFrame,QScrollArea, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
 
 from PySide6.QtCore import Qt
-class Pergunta5Window(QWidget):
+class Pergunta9Window(QWidget):
 
     def __init__(self, stacked_widget):
             super().__init__()
@@ -17,7 +17,7 @@ class Pergunta5Window(QWidget):
 
             h_layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignLeft)
             icon = QLabel()
-            pixmap = QPixmap("./images/ecustos-logo.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = QPixmap("./images/ecustos-logo.png").scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon.setPixmap(pixmap)
             icon.setAlignment(Qt.AlignCenter)
             h_layout.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
@@ -34,37 +34,71 @@ class Pergunta5Window(QWidget):
 
             # main
             v_layout = QVBoxLayout()
-            pergunta = QLabel('Caso a sua empresa produza em lotes, qual seria o tamanho médio do lote para os seus principais produtos?')
+            pergunta = QLabel('Posicione o slide em cada dimensão para representar o quão sua empresa se enquadra.')
             pergunta.setObjectName("pergunta")
             pergunta.setWordWrap(True)
             pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            pergunta.setStyleSheet("font-size: 25px;")  # Definindo o tamanho da fonte
-
-            v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)           
+            pergunta.setStyleSheet("font-size: 30px;")  # Definindo o tamanho da fonte
+            v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)
+            label = QLabel("Automação do processo")
+            slider = QSlider(Qt.Horizontal)
+            slider.setRange(0, 100)
+            slider.setValue(50)
+            slider.setTickPosition(QSlider.TicksBelow)
+            slider.setTickInterval(10)
+            slider.setFixedWidth(150)
+            v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
 
             #slider container
             slider_container = QHBoxLayout()
-            self.min_label = QLabel("Até 100 unidades")
-            self.max_label = QLabel("Mais de 10.000 unidades")
+            self.min_label = QLabel("Rendimento da capacidade")
+            self.max_label = QLabel("Agregação de valor")
 
-            self.slider = QSlider(Qt.Horizontal)
-            self.slider.setMinimum(0)
-            self.slider.setMaximum(100)
-            self.slider.setValue(50)
-            self.slider.setTickPosition(QSlider.TicksBelow)
-            self.slider.setTickInterval(10)
+            self.slider1 = QSlider(Qt.Vertical)
+            self.slider1.setRange(0, 100)
+            self.slider1.setValue(50)
+            self.slider1.setTickPosition(QSlider.TicksBelow)
+            self.slider1.setTickInterval(10)
+            self.slider1.setFixedHeight(150)
+
+            slider_container.setContentsMargins(0,0,0,0)
             slider_container.addWidget(self.min_label)
-            slider_container.addWidget(self.slider)
+
+            self.slider2 = QSlider(Qt.Vertical)
+            self.slider2.setRange(0, 100)
+            self.slider2.setValue(50)
+            self.slider2.setTickPosition(QSlider.TicksBelow)
+            self.slider2.setTickInterval(10)
+            self.slider2.setFixedHeight(150)
+            
+            slider_container.addWidget(self.slider1)
+            
+            icon = QLabel()
+            icon.setFixedSize(250, 160)  # Tamanho fixo
+            icon.setScaledContents(True)
+            pixmap = QPixmap("./images/dimensoes.png")
+            icon.setPixmap(pixmap)
+            icon.setAlignment(Qt.AlignCenter)
+            slider_container.addWidget(icon, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            slider_container.addWidget(self.slider2)
             slider_container.addWidget(self.max_label)
 
-            self.value_label = QLabel("Valor atual: 5000")
-            self.slider.valueChanged.connect(self.update_label)
+            self.value_label = QLabel("Força de trabalho")
             self.value_label.setAlignment(Qt.AlignCenter)
 
             v_layout.addLayout(slider_container)
+            slider = QSlider(Qt.Horizontal)
+            slider.setRange(0, 100)
+            slider.setValue(50)
+            slider.setTickPosition(QSlider.TicksBelow)
+            slider.setTickInterval(10)
+            slider.setFixedWidth(150)
 
+            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
             v_layout.addWidget(self.value_label)
-    
+
                 
             #radio buttons
             radio_layout = QVBoxLayout()
@@ -109,10 +143,23 @@ class Pergunta5Window(QWidget):
             #adicionando o layout ao widget
             layout.setContentsMargins(20, 5, 20, 20)
             layout.setSpacing(10)
-            self.setLayout(layout)
+            # self.setLayout(layout)
+            scroll_area = QScrollArea()
+            scroll_area.setWidgetResizable(True)
+
+            # Conteúdo real da tela
+            content_widget = QWidget()
+            content_widget.setLayout(layout)
+
+            scroll_area.setWidget(content_widget)
+
+            # Layout final da tela com rolagem
+            final_layout = QVBoxLayout()
+            final_layout.addWidget(scroll_area)
+            self.setLayout(final_layout)
+
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(7)
+        self.stacked_widget.setCurrentIndex(11)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(9)
-    def update_label(self, value):
-        self.value_label.setText(f"Valor atual: {int(100 + (value / 100) * (10000 - 100))}")
+        self.stacked_widget.setCurrentIndex(13)
+    

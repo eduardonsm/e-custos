@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QFrame, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
 
 from PySide6.QtCore import Qt
-class Pergunta5Window(QWidget):
+class Pergunta12Window(QWidget):
 
     def __init__(self, stacked_widget):
             super().__init__()
@@ -17,7 +17,7 @@ class Pergunta5Window(QWidget):
 
             h_layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignLeft)
             icon = QLabel()
-            pixmap = QPixmap("./images/ecustos-logo.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = QPixmap("./images/ecustos-logo.png").scaled(170, 170, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon.setPixmap(pixmap)
             icon.setAlignment(Qt.AlignCenter)
             h_layout.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
@@ -34,49 +34,34 @@ class Pergunta5Window(QWidget):
 
             # main
             v_layout = QVBoxLayout()
-            pergunta = QLabel('Caso a sua empresa produza em lotes, qual seria o tamanho médio do lote para os seus principais produtos?')
+            pergunta = QLabel('Escolha entre os extremos para as seguintes opções:')
             pergunta.setObjectName("pergunta")
-            pergunta.setWordWrap(True)
+            pergunta.setStyleSheet("font-size: 20px;")
+            pergunta.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            pergunta.setTextFormat(Qt.RichText)
             pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            pergunta.setStyleSheet("font-size: 25px;")  # Definindo o tamanho da fonte
+            v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)           
-
-            #slider container
-            slider_container = QHBoxLayout()
-            self.min_label = QLabel("Até 100 unidades")
-            self.max_label = QLabel("Mais de 10.000 unidades")
-
-            self.slider = QSlider(Qt.Horizontal)
-            self.slider.setMinimum(0)
-            self.slider.setMaximum(100)
-            self.slider.setValue(50)
-            self.slider.setTickPosition(QSlider.TicksBelow)
-            self.slider.setTickInterval(10)
-            slider_container.addWidget(self.min_label)
-            slider_container.addWidget(self.slider)
-            slider_container.addWidget(self.max_label)
-
-            self.value_label = QLabel("Valor atual: 5000")
-            self.slider.valueChanged.connect(self.update_label)
-            self.value_label.setAlignment(Qt.AlignCenter)
-
-            v_layout.addLayout(slider_container)
-
-            v_layout.addWidget(self.value_label)
-    
-                
             #radio buttons
-            radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Não sei responder")
-            
-            radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout1 = QHBoxLayout()
+            label1 = QLabel("Especificação do projeto e produção")
+            radio1 = QRadioButton("Fabricante")
+            radio2 = QRadioButton("Cliente")
+    # replicar
+            layout1.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout1.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout1.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
 
-            radio_layout.setContentsMargins(0, 0, 0, 0)
-            radio_layout.setSpacing(10)
+            layout1.setContentsMargins(0, 0, 0, 0)
+            layout1.setSpacing(16)
+
+            radio_group = QButtonGroup(self)
+            radio_group.addButton(radio1, 1)
+            radio_group.addButton(radio2, 2)
+            radio_group.setExclusive(True)
 
             container = QWidget()
-            container.setLayout(radio_layout)
+            container.setLayout(layout1)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
             main_container = QWidget()
             main_container.setLayout(v_layout)
@@ -111,8 +96,6 @@ class Pergunta5Window(QWidget):
             layout.setSpacing(10)
             self.setLayout(layout)
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(7)
+        self.stacked_widget.setCurrentIndex(14)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(9)
-    def update_label(self, value):
-        self.value_label.setText(f"Valor atual: {int(100 + (value / 100) * (10000 - 100))}")
+        self.stacked_widget.setCurrentIndex(16)
