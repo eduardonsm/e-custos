@@ -18,6 +18,21 @@ from view.guiasmart.Pergunta9Window import Pergunta9Window
 from view.guiasmart.Pergunta10Window import Pergunta10Window
 from view.guiasmart.Pergunta11Window import Pergunta11Window
 from view.guiasmart.Pergunta12Window import Pergunta12Window
+from view.guiasmart.Pergunta13Window import Pergunta13Window
+from view.guiasmart.Pergunta14Window import Pergunta14Window
+from view.guiasmart.Pergunta15Window import Pergunta15Window
+from view.guiasmart.Pergunta16Window import Pergunta16Window
+from view.guiasmart.Pergunta17Window import Pergunta17Window
+from view.guiasmart.Pergunta18Window import Pergunta18Window
+from view.guiasmart.Pergunta19Window import Pergunta19Window
+from view.guiasmart.Pergunta20Window import Pergunta20Window
+from view.guiasmart.Pergunta21Window import Pergunta21Window
+from view.guiasmart.Pergunta22Window import Pergunta22Window
+from view.guiasmart.Pergunta23Window import Pergunta23Window
+from view.guiasmart.Pergunta24Window import Pergunta24Window
+from view.guiasmart.Pergunta25Window import Pergunta25Window
+from view.guiasmart.Pergunta26Window import Pergunta26Window
+from view.guiasmart.Pergunta27Window import Pergunta27Window
 
 
 # Configuração do banco de dados
@@ -69,6 +84,21 @@ class LoginApp(QWidget):
         self.pergunta10_window = Pergunta10Window(self.stacked_widget)
         self.pergunta11_window = Pergunta11Window(self.stacked_widget)
         self.pergunta12_window = Pergunta12Window(self.stacked_widget)
+        self.pergunta13_window = Pergunta13Window(self.stacked_widget)
+        self.pergunta14_window = Pergunta14Window(self.stacked_widget)
+        self.pergunta15_window = Pergunta15Window(self.stacked_widget)
+        self.pergunta16_window = Pergunta16Window(self.stacked_widget)
+        self.pergunta17_window = Pergunta17Window(self.stacked_widget)
+        self.pergunta18_window = Pergunta18Window(self.stacked_widget)
+        self.pergunta19_window = Pergunta19Window(self.stacked_widget)
+        self.pergunta20_window = Pergunta20Window(self.stacked_widget)
+        self.pergunta21_window = Pergunta21Window(self.stacked_widget)
+        self.pergunta22_window = Pergunta22Window(self.stacked_widget)
+        self.pergunta23_window = Pergunta23Window(self.stacked_widget)
+        self.pergunta24_window = Pergunta24Window(self.stacked_widget)
+        self.pergunta25_window = Pergunta25Window(self.stacked_widget)
+        self.pergunta26_window = Pergunta26Window(self.stacked_widget)
+        self.pergunta27_window = Pergunta27Window(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
@@ -86,6 +116,21 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.pergunta10_window)
         self.stacked_widget.addWidget(self.pergunta11_window)
         self.stacked_widget.addWidget(self.pergunta12_window)
+        self.stacked_widget.addWidget(self.pergunta13_window)
+        self.stacked_widget.addWidget(self.pergunta14_window)
+        self.stacked_widget.addWidget(self.pergunta15_window)
+        self.stacked_widget.addWidget(self.pergunta16_window)
+        self.stacked_widget.addWidget(self.pergunta17_window)
+        self.stacked_widget.addWidget(self.pergunta18_window)
+        self.stacked_widget.addWidget(self.pergunta19_window)
+        self.stacked_widget.addWidget(self.pergunta20_window)
+        self.stacked_widget.addWidget(self.pergunta21_window)
+        self.stacked_widget.addWidget(self.pergunta22_window)
+        self.stacked_widget.addWidget(self.pergunta23_window)
+        self.stacked_widget.addWidget(self.pergunta24_window)
+        self.stacked_widget.addWidget(self.pergunta25_window)
+        self.stacked_widget.addWidget(self.pergunta26_window)
+        self.stacked_widget.addWidget(self.pergunta27_window)
 
 
         layout = QVBoxLayout()

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
+from PySide6.QtWidgets import QFrame,QScrollArea, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
 
@@ -36,7 +36,7 @@ class Pergunta12Window(QWidget):
             v_layout = QVBoxLayout()
             pergunta = QLabel('Escolha entre os extremos para as seguintes opções:')
             pergunta.setObjectName("pergunta")
-            pergunta.setStyleSheet("font-size: 20px;")
+            pergunta.setStyleSheet("font-size: 25px;")
             pergunta.setTextInteractionFlags(Qt.TextBrowserInteraction)
             pergunta.setTextFormat(Qt.RichText)
             pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
@@ -47,22 +47,102 @@ class Pergunta12Window(QWidget):
             label1 = QLabel("Especificação do projeto e produção")
             radio1 = QRadioButton("Fabricante")
             radio2 = QRadioButton("Cliente")
-    # replicar
             layout1.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout1.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout1.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
-
             layout1.setContentsMargins(0, 0, 0, 0)
-            layout1.setSpacing(16)
-
             radio_group = QButtonGroup(self)
             radio_group.addButton(radio1, 1)
             radio_group.addButton(radio2, 2)
             radio_group.setExclusive(True)
-
             container = QWidget()
             container.setLayout(layout1)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+            #radio buttons2
+            layout2 = QHBoxLayout()
+            label1 = QLabel("Dimensão do volume produzido")
+            radio1 = QRadioButton("Unidades/período")
+            radio2 = QRadioButton("Unidades/pedido")
+            layout2.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout2.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout2.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout2.setContentsMargins(0, 0, 0, 0)
+            radio_group = QButtonGroup(self)
+            radio_group.addButton(radio1, 1)
+            radio_group.addButton(radio2, 2)
+            radio_group.setExclusive(True)
+            container = QWidget()
+            container.setLayout(layout2)
+            v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+            #radio buttons3
+            layout3 = QHBoxLayout()
+            label1 = QLabel("Mercado de compradores")
+            radio1 = QRadioButton("Muitos")
+            radio2 = QRadioButton("Poucos")
+            layout3.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout3.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout3.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout3.setContentsMargins(0, 0, 0, 0)
+            radio_group = QButtonGroup(self)
+            radio_group.addButton(radio1, 1)
+            radio_group.addButton(radio2, 2)
+            radio_group.setExclusive(True)
+            container = QWidget()
+            container.setLayout(layout3)
+            v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+            #radio buttons4
+            layout4 = QHBoxLayout()
+            label1 = QLabel("Atendimento ao mercado")
+            radio1 = QRadioButton("Genérico")
+            radio2 = QRadioButton("Específico")
+            layout4.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout4.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout4.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout4.setContentsMargins(0, 0, 0, 0)
+            radio_group = QButtonGroup(self)
+            radio_group.addButton(radio1, 1)
+            radio_group.addButton(radio2, 2)
+            radio_group.setExclusive(True)
+            container = QWidget()
+            container.setLayout(layout4)
+            v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+            #radio buttons5
+            layout5 = QHBoxLayout()
+            label1 = QLabel("Estoque de matéria-prima")
+            radio1 = QRadioButton("Indispensável")
+            radio2 = QRadioButton("Temporário")
+            layout5.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout5.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout5.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout5.setContentsMargins(0, 0, 0, 0)
+            radio_group = QButtonGroup(self)
+            radio_group.addButton(radio1, 1)
+            radio_group.addButton(radio2, 2)
+            radio_group.setExclusive(True)
+            container = QWidget()
+            container.setLayout(layout5)
+            v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+            #radio buttons6
+            layout6 = QHBoxLayout()
+            label1 = QLabel("Estoque de produtos acabados")
+            radio1 = QRadioButton("Necessário")
+            radio2 = QRadioButton("Indesejável")
+            layout6.addWidget(label1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout6.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout6.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
+            layout6.setContentsMargins(0, 0, 0, 0)
+            radio_group = QButtonGroup(self)
+            radio_group.addButton(radio1, 1)
+            radio_group.addButton(radio2, 2)
+            radio_group.setExclusive(True)
+            container = QWidget()
+            container.setLayout(layout6)
+            v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            radio1 = QRadioButton("Nao sei responder")
+            radio1.setMaximumWidth(300)
+            v_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignCenter)
+
             main_container = QWidget()
             main_container.setLayout(v_layout)
             layout.addWidget(main_container)
@@ -94,7 +174,20 @@ class Pergunta12Window(QWidget):
             #adicionando o layout ao widget
             layout.setContentsMargins(20, 5, 20, 20)
             layout.setSpacing(10)
-            self.setLayout(layout)
+            scroll_area = QScrollArea()
+            scroll_area.setWidgetResizable(True)
+
+            # Conteúdo real da tela
+            content_widget = QWidget()
+            content_widget.setLayout(layout)
+
+            scroll_area.setWidget(content_widget)
+
+            # Layout final da tela com rolagem
+            final_layout = QVBoxLayout()
+            final_layout.addWidget(scroll_area)
+            self.setLayout(final_layout)
+
     def switch_to_welcome(self):
         self.stacked_widget.setCurrentIndex(14)
     def avancar(self):
