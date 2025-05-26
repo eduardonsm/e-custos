@@ -132,7 +132,6 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.pergunta26_window)
         self.stacked_widget.addWidget(self.pergunta27_window)
 
-
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
         self.setLayout(layout)
