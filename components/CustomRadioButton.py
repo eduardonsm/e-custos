@@ -9,7 +9,7 @@ class CustomRadioButton(QWidget):
         super().__init__(parent)
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
-
+        self._text = text
         # RadioButton (apenas icone)
         self.radio = QRadioButton()
         group.addButton(self.radio, id)
@@ -37,3 +37,5 @@ class CustomRadioButton(QWidget):
 
     def setAutoExclusive(self, value):
         self.radio.setAutoExclusive(value)
+    def text(self):
+        return self._text

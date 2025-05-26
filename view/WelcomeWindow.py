@@ -68,10 +68,10 @@ class Welcome(QWidget):
             radio3.setIconSize(radio3.sizeHint()) 
 
             # Agrupar os botões para garantir seleção única
-            group = QButtonGroup()
-            group.addButton(radio1)
-            group.addButton(radio2)
-            group.addButton(radio3)
+            self.principio_group = QButtonGroup()
+            self.principio_group.addButton(radio1)
+            self.principio_group.addButton(radio2)
+            self.principio_group.addButton(radio3)
 
             h_layout = QHBoxLayout()
             h_layout.addWidget(principio)
@@ -92,14 +92,14 @@ class Welcome(QWidget):
 
             # metodo
             metodo = QLabel("Método:")
-            group = QButtonGroup(self)
-            radio1 = CustomRadioButton("Simples","./images/simples.png",group,1)
-            radio2 = CustomRadioButton("RKW","./images/rkw.png",group,2)
-            radio3 = CustomRadioButton("UEP","./images/uep.png",group,3)
-            radio4 = CustomRadioButton("ABC","./images/abc.png",group,4)
-            radio5 = CustomRadioButton("TDABC","./images/tdabc.png",group,5)
-            radio6 = CustomRadioButton("Gecon","./images/gecon.png",group,6)
-            group.setExclusive(True)
+            self.metodo_group = QButtonGroup(self)
+            radio1 = CustomRadioButton("Simples","./images/simples.png",self.metodo_group,1)
+            radio2 = CustomRadioButton("RKW","./images/rkw.png",self.metodo_group,2)
+            radio3 = CustomRadioButton("UEP","./images/uep.png",self.metodo_group,3)
+            radio4 = CustomRadioButton("ABC","./images/abc.png",self.metodo_group,4)
+            radio5 = CustomRadioButton("TDABC","./images/tdabc.png",self.metodo_group,5)
+            radio6 = CustomRadioButton("Gecon","./images/gecon.png",self.metodo_group,6)
+            self.metodo_group.setExclusive(True)
 
             h_layout = QHBoxLayout()
             h_layout.addWidget(metodo)
@@ -113,12 +113,11 @@ class Welcome(QWidget):
             container = QWidget()
             container.setLayout(h_layout)
             layout.addWidget(container)
-            
-            
 
             #botao de selecionar
             selecionar = QPushButton("SELECIONAR")
             selecionar.setStyleSheet("background-color: #2196F3; color: white;")
+            selecionar.clicked.connect(lambda: self.update_principio_metodo())
 
             layout.addWidget(selecionar, alignment=Qt.AlignmentFlag.AlignRight)
 
@@ -129,3 +128,12 @@ class Welcome(QWidget):
     def switch_to_guia(self):
         # Função para mudar para a tela do guia
         self.stacked_widget.setCurrentIndex(3)
+    def update_principio_metodo(self):
+        # Função para atualizar o princípio e método selecionados
+        principio = self.principio_group.checkedButton().text() if self.principio_group.checkedButton() else None
+        metodo = None
+        for btn in self.findChildren(CustomRadioButton):
+            if btn.isChecked():
+                metodo = btn.text()
+                break
+        print(f"Princípio selecionado: {principio}, Método selecionado: {metodo}")
