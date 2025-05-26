@@ -1,8 +1,8 @@
-from PySide6.QtWidgets import QFrame, QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QStackedWidget
-import sqlite3
+from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 from model.UserRepository import UserRepository
+from model.Session import Session
 
 class LoginWindow(QWidget):
     def __init__(self, stacked_widget):
@@ -54,8 +54,10 @@ class LoginWindow(QWidget):
         self.setLayout(layout)
 
     def authenticate_user(self):
-      
-        if UserRepository.authenticate_user(self):
+        user = UserRepository.authenticate_user(self)
+        if user:
+            Session.user_id = user[0] 
+            Session.username = user[1]
             QMessageBox.information(self, "Sucesso", "Login realizado com sucesso!")
             self.stacked_widget.setCurrentIndex(2)  
         else:

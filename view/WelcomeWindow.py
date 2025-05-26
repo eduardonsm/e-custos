@@ -2,6 +2,8 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxL
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QIcon, QPixmap
 from components.CustomRadioButton import CustomRadioButton
+from model.Session import Session
+import sqlite3
 
 from PySide6.QtCore import Qt
 class Welcome(QWidget):
@@ -117,7 +119,7 @@ class Welcome(QWidget):
             #botao de selecionar
             selecionar = QPushButton("SELECIONAR")
             selecionar.setStyleSheet("background-color: #2196F3; color: white;")
-            selecionar.clicked.connect(lambda: self.update_principio_metodo())
+            selecionar.clicked.connect(lambda: self.salvar_metodo_principio())
 
             layout.addWidget(selecionar, alignment=Qt.AlignmentFlag.AlignRight)
 
@@ -128,12 +130,24 @@ class Welcome(QWidget):
     def switch_to_guia(self):
         # Função para mudar para a tela do guia
         self.stacked_widget.setCurrentIndex(3)
-    def update_principio_metodo(self):
-        # Função para atualizar o princípio e método selecionados
+
+    def salvar_metodo_principio(self):
         principio = self.principio_group.checkedButton().text() if self.principio_group.checkedButton() else None
         metodo = None
         for btn in self.findChildren(CustomRadioButton):
             if btn.isChecked():
                 metodo = btn.text()
                 break
-        print(f"Princípio selecionado: {principio}, Método selecionado: {metodo}")
+            #colocar verificações
+        self.update_principio_metodo(Session.user_id, metodo, principio)
+
+    def update_principio_metodo(self, user_id, metodo, principio):
+        conn = sqlite3.connect("model/LoginSystem.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE users
+            SET metodo = ?, principio = ?
+            WHERE id = ?
+        """, (metodo, principio, user_id))
+        conn.commit()
+        conn.close()
