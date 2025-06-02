@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
+from model.Score import Score
 
 from PySide6.QtCore import Qt
 class Pergunta2Window(QWidget):
@@ -71,6 +72,8 @@ class Pergunta2Window(QWidget):
             radio_group.addButton(radio6, 6)
             radio_group.setExclusive(True)
 
+            self.radio_group = radio_group
+
             container = QWidget()
             container.setLayout(radio_layout)
             h_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -109,4 +112,22 @@ class Pergunta2Window(QWidget):
     def switch_to_welcome(self):
         self.stacked_widget.setCurrentIndex(4)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(6)
+        index = self.stacked_widget.currentIndex()
+        self.responder(index-4)
+        self.stacked_widget.setCurrentIndex(index + 1)
+    def responder(self, index):
+
+        checked_button = self.radio_group.checkedButton()
+        if not checked_button:
+            QMessageBox.warning(self, "Atenção", "Por favor, selecione uma opção antes de avançar.")
+            return
+
+        texto = checked_button.text()
+        if texto == "Não sei responder":
+            resposta = None
+        else:
+            resposta = self.radio_group.id(checked_button)+4
+
+        score = Score()
+        score.adicionarLinha(index, resposta)
+        print("Respostas até agora:", score.getRespostas())
