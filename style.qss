@@ -45,7 +45,6 @@ QPushButton {
     padding: 18px;
     font-size: 18px;
     border-radius: 5px;
-    cursor: pointer;
 }
 QPushButton:hover {
     background-color:rgb(36, 85, 168);
@@ -65,7 +64,6 @@ QRadioButton{
     padding: 10px;
     font-size: 18px;
     border-radius: 10px;
-    cursor: pointer;
 }
 QRadioButton:hover {
     background-color:rgb(36, 85, 168);
