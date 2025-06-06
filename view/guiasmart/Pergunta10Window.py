@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QFrame,QScrollArea, QHBoxLayout, QRadioButton, QWi
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
 from components.CustomRadioButton import CustomRadioButton
+from model.Score import Score
 
 from PySide6.QtCore import Qt
 class Pergunta10Window(QWidget):
@@ -48,13 +49,14 @@ class Pergunta10Window(QWidget):
             #radio buttons
             group = QButtonGroup(self)
             radio1 = CustomRadioButton("Fluxo em linha","./images/LINHA.jpeg",group,1)
-            radio2 = CustomRadioButton("Fluxo por processos","./images/LINHA.jpeg",group,2)
-            radio3 = CustomRadioButton("Arranjo Híbrido","",group,3)
+            radio2 = CustomRadioButton("Fluxo em célula","./images/LINHA.jpeg",group,2)
+            radio3 = CustomRadioButton("Fluxo por processos","",group,3)
 
-            radio4 = CustomRadioButton("Fluxo em célula","./images/LINHA.jpeg",group,4)
-            radio5 = CustomRadioButton("Fluxo posicional","./images/LINHA.jpeg",group,5)
+            radio4 = CustomRadioButton("Fluxo posicional","./images/LINHA.jpeg",group,4)
+            radio5 = CustomRadioButton("Arranjo Híbrido","./images/LINHA.jpeg",group,5)
             radio6 = CustomRadioButton("Não sei responder","",group,6)
             group.setExclusive(True)
+            self.radio_group = group
 
             h_layout = QHBoxLayout()
             v_layout1 = QVBoxLayout()
@@ -118,7 +120,25 @@ class Pergunta10Window(QWidget):
             self.setLayout(final_layout)
 
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(12)
+        index = self.stacked_widget.currentIndex()
+        self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(14)
+        index = self.stacked_widget.currentIndex()
+        self.responder(index-1)
+        self.stacked_widget.setCurrentIndex(index + 1)
+    def responder(self, index):
+
+        checked_button = self.radio_group.checkedButton()
+
+        for btn in self.findChildren(CustomRadioButton):
+            if btn.isChecked():
+                texto = btn.text()
+        if texto == "Não sei responder":
+            resposta = None
+        else:
+            resposta = self.radio_group.id(checked_button)+47
+
+        score = Score()
+        score.adicionarLinha(index, resposta)
+        print("Respostas até agora:", score.getRespostas())
     

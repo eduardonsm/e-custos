@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QFrame,QScrollArea, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
+from model.Score import Score
+from model.utils import transformar_para_escala_1_3
 
 from PySide6.QtCore import Qt
 class Pergunta8Window(QWidget):
@@ -41,38 +43,38 @@ class Pergunta8Window(QWidget):
             pergunta.setStyleSheet("font-size: 30px;")  # Definindo o tamanho da fonte
             v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)
             label = QLabel("Flexibilidade dos recursos")
-            slider = QSlider(Qt.Horizontal)
-            slider.setRange(0, 100)
-            slider.setValue(50)
-            slider.setTickPosition(QSlider.TicksBelow)
-            slider.setTickInterval(10)
-            slider.setFixedWidth(150)
+            self.flexibilidadeSlider = QSlider(Qt.Horizontal)
+            self.flexibilidadeSlider.setRange(0, 100)
+            self.flexibilidadeSlider.setValue(50)
+            self.flexibilidadeSlider.setTickPosition(QSlider.TicksBelow)
+            self.flexibilidadeSlider.setTickInterval(10)
+            self.flexibilidadeSlider.setFixedWidth(150)
             v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
-            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(self.flexibilidadeSlider, alignment=Qt.AlignmentFlag.AlignCenter)
 
             #slider container
             slider_container = QHBoxLayout()
             self.min_label = QLabel("Lead-time de atravessamento")
             self.max_label = QLabel("Produtividade")
 
-            self.slider1 = QSlider(Qt.Vertical)
-            self.slider1.setRange(0, 100)
-            self.slider1.setValue(50)
-            self.slider1.setTickPosition(QSlider.TicksBelow)
-            self.slider1.setTickInterval(10)
-            self.slider1.setFixedHeight(150)
+            self.leadSlider = QSlider(Qt.Vertical)
+            self.leadSlider.setRange(0, 100)
+            self.leadSlider.setValue(50)
+            self.leadSlider.setTickPosition(QSlider.TicksBelow)
+            self.leadSlider.setTickInterval(10)
+            self.leadSlider.setFixedHeight(150)
 
             slider_container.setContentsMargins(0,0,0,0)
             slider_container.addWidget(self.min_label)
 
-            self.slider2 = QSlider(Qt.Vertical)
-            self.slider2.setRange(0, 100)
-            self.slider2.setValue(50)
-            self.slider2.setTickPosition(QSlider.TicksBelow)
-            self.slider2.setTickInterval(10)
-            self.slider2.setFixedHeight(150)
-            
-            slider_container.addWidget(self.slider1)
+            self.produtividadeSlider = QSlider(Qt.Vertical)
+            self.produtividadeSlider.setRange(0, 100)
+            self.produtividadeSlider.setValue(50)
+            self.produtividadeSlider.setTickPosition(QSlider.TicksBelow)
+            self.produtividadeSlider.setTickInterval(10)
+            self.produtividadeSlider.setFixedHeight(150)
+
+            slider_container.addWidget(self.leadSlider)
             
             icon = QLabel()
             icon.setFixedSize(250, 160)  # Tamanho fixo
@@ -82,29 +84,29 @@ class Pergunta8Window(QWidget):
             icon.setAlignment(Qt.AlignCenter)
             slider_container.addWidget(icon, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            slider_container.addWidget(self.slider2)
+            slider_container.addWidget(self.produtividadeSlider)
             slider_container.addWidget(self.max_label)
 
             self.value_label = QLabel("Padronização do produto")
             self.value_label.setAlignment(Qt.AlignCenter)
 
             v_layout.addLayout(slider_container)
-            slider = QSlider(Qt.Horizontal)
-            slider.setRange(0, 100)
-            slider.setValue(50)
-            slider.setTickPosition(QSlider.TicksBelow)
-            slider.setTickInterval(10)
-            slider.setFixedWidth(150)
+            self.padronizacaoSlider = QSlider(Qt.Horizontal)
+            self.padronizacaoSlider.setRange(0, 100)
+            self.padronizacaoSlider.setValue(50)
+            self.padronizacaoSlider.setTickPosition(QSlider.TicksBelow)
+            self.padronizacaoSlider.setTickInterval(10)
+            self.padronizacaoSlider.setFixedWidth(150)
 
-            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(self.padronizacaoSlider, alignment=Qt.AlignmentFlag.AlignCenter)
             v_layout.addWidget(self.value_label)
 
                 
             #radio buttons
             radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Não sei responder")
-            
-            radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            self.radio1 = QRadioButton("Não sei responder")
+
+            radio_layout.addWidget(self.radio1, alignment=Qt.AlignmentFlag.AlignLeft)
 
             radio_layout.setContentsMargins(0, 0, 0, 0)
             radio_layout.setSpacing(10)
@@ -159,7 +161,34 @@ class Pergunta8Window(QWidget):
             self.setLayout(final_layout)
 
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(10)
+        index = self.stacked_widget.currentIndex()
+        self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(12)
-    
+        index = self.stacked_widget.currentIndex()
+        self.responder(index-4)
+        self.stacked_widget.setCurrentIndex(index + 1)
+
+    def responder(self, index):
+        score = Score()
+
+        if self.radio1.isChecked():
+            respostaFlexibilidade = None
+            respostaLead = None
+            respostaProdutividade = None
+            respostaPadronizacao = None
+        else:
+            flexibilidade_original = self.flexibilidadeSlider.value()
+            lead_original = self.leadSlider.value()
+            produtividade_original = self.produtividadeSlider.value()
+            padronizacao_original = self.padronizacaoSlider.value()
+
+            respostaFlexibilidade = 23+transformar_para_escala_1_3(flexibilidade_original)
+            respostaLead = 26+transformar_para_escala_1_3(lead_original)
+            respostaProdutividade = 29+transformar_para_escala_1_3(produtividade_original)
+            respostaPadronizacao = 32+transformar_para_escala_1_3(padronizacao_original)
+
+        score.adicionarLinha(index, respostaFlexibilidade)
+        score.adicionarLinha(index + 1, respostaLead)
+        score.adicionarLinha(index + 2, respostaProdutividade)
+        score.adicionarLinha(index + 3, respostaPadronizacao)
+        print("Respostas até agora:", score.getRespostas())

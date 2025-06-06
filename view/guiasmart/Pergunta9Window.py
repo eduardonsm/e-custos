@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QFrame,QScrollArea, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
+from model.Score import Score
+from model.utils import transformar_para_escala_1_3
 
 from PySide6.QtCore import Qt
 class Pergunta9Window(QWidget):
@@ -41,39 +43,39 @@ class Pergunta9Window(QWidget):
             pergunta.setStyleSheet("font-size: 30px;")  # Definindo o tamanho da fonte
             v_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)
             label = QLabel("Automação do processo")
-            slider = QSlider(Qt.Horizontal)
-            slider.setRange(0, 100)
-            slider.setValue(50)
-            slider.setTickPosition(QSlider.TicksBelow)
-            slider.setTickInterval(10)
-            slider.setFixedWidth(150)
+            self.automacaoSlider = QSlider(Qt.Horizontal)
+            self.automacaoSlider.setRange(0, 100)
+            self.automacaoSlider.setValue(50)
+            self.automacaoSlider.setTickPosition(QSlider.TicksBelow)
+            self.automacaoSlider.setTickInterval(10)
+            self.automacaoSlider.setFixedWidth(150)
             v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
-            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(self.automacaoSlider, alignment=Qt.AlignmentFlag.AlignCenter)
 
             #slider container
             slider_container = QHBoxLayout()
             self.min_label = QLabel("Rendimento da capacidade")
-            self.max_label = QLabel("Agregação de valor")
+            self.max_label = QLabel("Força de trabalho")
 
-            self.slider1 = QSlider(Qt.Vertical)
-            self.slider1.setRange(0, 100)
-            self.slider1.setValue(50)
-            self.slider1.setTickPosition(QSlider.TicksBelow)
-            self.slider1.setTickInterval(10)
-            self.slider1.setFixedHeight(150)
+            self.rendimentoSlider = QSlider(Qt.Vertical)
+            self.rendimentoSlider.setRange(0, 100)
+            self.rendimentoSlider.setValue(50)
+            self.rendimentoSlider.setTickPosition(QSlider.TicksBelow)
+            self.rendimentoSlider.setTickInterval(10)
+            self.rendimentoSlider.setFixedHeight(150)
 
             slider_container.setContentsMargins(0,0,0,0)
             slider_container.addWidget(self.min_label)
 
-            self.slider2 = QSlider(Qt.Vertical)
-            self.slider2.setRange(0, 100)
-            self.slider2.setValue(50)
-            self.slider2.setTickPosition(QSlider.TicksBelow)
-            self.slider2.setTickInterval(10)
-            self.slider2.setFixedHeight(150)
-            
-            slider_container.addWidget(self.slider1)
-            
+            self.forcaTrabalhoSlider = QSlider(Qt.Vertical)
+            self.forcaTrabalhoSlider.setRange(0, 100)
+            self.forcaTrabalhoSlider.setValue(50)
+            self.forcaTrabalhoSlider.setTickPosition(QSlider.TicksBelow)
+            self.forcaTrabalhoSlider.setTickInterval(10)
+            self.forcaTrabalhoSlider.setFixedHeight(150)
+
+            slider_container.addWidget(self.rendimentoSlider)
+
             icon = QLabel()
             icon.setFixedSize(250, 160)  # Tamanho fixo
             icon.setScaledContents(True)
@@ -82,29 +84,28 @@ class Pergunta9Window(QWidget):
             icon.setAlignment(Qt.AlignCenter)
             slider_container.addWidget(icon, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            slider_container.addWidget(self.slider2)
+            slider_container.addWidget(self.forcaTrabalhoSlider)
             slider_container.addWidget(self.max_label)
 
-            self.value_label = QLabel("Força de trabalho")
+            self.value_label = QLabel("Agregação de valor")
             self.value_label.setAlignment(Qt.AlignCenter)
 
             v_layout.addLayout(slider_container)
-            slider = QSlider(Qt.Horizontal)
-            slider.setRange(0, 100)
-            slider.setValue(50)
-            slider.setTickPosition(QSlider.TicksBelow)
-            slider.setTickInterval(10)
-            slider.setFixedWidth(150)
+            self.agregacaoSlider = QSlider(Qt.Horizontal)
+            self.agregacaoSlider.setRange(0, 100)
+            self.agregacaoSlider.setValue(50)
+            self.agregacaoSlider.setTickPosition(QSlider.TicksBelow)
+            self.agregacaoSlider.setTickInterval(10)
+            self.agregacaoSlider.setFixedWidth(150)
 
-            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(self.agregacaoSlider, alignment=Qt.AlignmentFlag.AlignCenter)
             v_layout.addWidget(self.value_label)
 
-                
             #radio buttons
             radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Não sei responder")
-            
-            radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            self.radio1 = QRadioButton("Não sei responder")
+
+            radio_layout.addWidget(self.radio1, alignment=Qt.AlignmentFlag.AlignLeft)
 
             radio_layout.setContentsMargins(0, 0, 0, 0)
             radio_layout.setSpacing(10)
@@ -157,9 +158,36 @@ class Pergunta9Window(QWidget):
             final_layout = QVBoxLayout()
             final_layout.addWidget(scroll_area)
             self.setLayout(final_layout)
-
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(11)
+        index = self.stacked_widget.currentIndex()
+        self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(13)
+        index = self.stacked_widget.currentIndex()
+        self.responder(index-4)
+        self.stacked_widget.setCurrentIndex(index + 1)
+
+    def responder(self, index):
+        score = Score()
+
+        if self.radio1.isChecked():
+            respostaAutomacao = None
+            respostaRendimento = None
+            respostaForcaTrabalho = None
+            respostaAgregacao = None
+        else:
+            automacao_original = self.automacaoSlider.value()
+            rendimento_original = self.rendimentoSlider.value()
+            forca_trabalho_original = self.forcaTrabalhoSlider.value()
+            agregacao_original = self.agregacaoSlider.value()
+
+            respostaAutomacao = 35+transformar_para_escala_1_3(automacao_original)
+            respostaRendimento = 38+transformar_para_escala_1_3(rendimento_original)
+            respostaForcaTrabalho = 41+transformar_para_escala_1_3(forca_trabalho_original)
+            respostaAgregacao = 44+transformar_para_escala_1_3(agregacao_original)
+
+        score.adicionarLinha(index, respostaAutomacao)
+        score.adicionarLinha(index + 1, respostaRendimento)
+        score.adicionarLinha(index + 2, respostaForcaTrabalho)
+        score.adicionarLinha(index + 3, respostaAgregacao)
+        print("Respostas até agora:", score.getRespostas())
     

@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QFrame,QScrollArea, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
+from model.Score import Score
+from model.utils import transformar_para_escala_1_3
 
 from PySide6.QtCore import Qt
 class Pergunta7Window(QWidget):
@@ -55,24 +57,24 @@ class Pergunta7Window(QWidget):
             self.min_label = QLabel("Volatilidade na demanda")
             self.max_label = QLabel("Variedade do mix")
 
-            self.slider1 = QSlider(Qt.Vertical)
-            self.slider1.setRange(0, 100)
-            self.slider1.setValue(50)
-            self.slider1.setTickPosition(QSlider.TicksBelow)
-            self.slider1.setTickInterval(10)
-            self.slider1.setFixedHeight(150)
+            self.volatilidadeSlider = QSlider(Qt.Vertical)
+            self.volatilidadeSlider.setRange(0, 100)
+            self.volatilidadeSlider.setValue(50)
+            self.volatilidadeSlider.setTickPosition(QSlider.TicksBelow)
+            self.volatilidadeSlider.setTickInterval(10)
+            self.volatilidadeSlider.setFixedHeight(150)
 
             slider_container.setContentsMargins(0,0,0,0)
             slider_container.addWidget(self.min_label)
 
-            self.slider2 = QSlider(Qt.Vertical)
-            self.slider2.setRange(0, 100)
-            self.slider2.setValue(50)
-            self.slider2.setTickPosition(QSlider.TicksBelow)
-            self.slider2.setTickInterval(10)
-            self.slider2.setFixedHeight(150)
+            self.variedadeSlider = QSlider(Qt.Vertical)
+            self.variedadeSlider.setRange(0, 100)
+            self.variedadeSlider.setValue(50)
+            self.variedadeSlider.setTickPosition(QSlider.TicksBelow)
+            self.variedadeSlider.setTickInterval(10)
+            self.variedadeSlider.setFixedHeight(150)
             
-            slider_container.addWidget(self.slider1)
+            slider_container.addWidget(self.volatilidadeSlider)
             
             icon = QLabel()
             icon.setFixedSize(250, 160)  # Tamanho fixo
@@ -82,29 +84,29 @@ class Pergunta7Window(QWidget):
             icon.setAlignment(Qt.AlignCenter)
             slider_container.addWidget(icon, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            slider_container.addWidget(self.slider2)
+            slider_container.addWidget(self.variedadeSlider)
             slider_container.addWidget(self.max_label)
 
             self.value_label = QLabel("Visibilidade")
             self.value_label.setAlignment(Qt.AlignCenter)
 
             v_layout.addLayout(slider_container)
-            slider = QSlider(Qt.Horizontal)
-            slider.setRange(0, 100)
-            slider.setValue(50)
-            slider.setTickPosition(QSlider.TicksBelow)
-            slider.setTickInterval(10)
-            slider.setFixedWidth(150)
+            self.visibilidadeSlider = QSlider(Qt.Horizontal)
+            self.visibilidadeSlider.setRange(0, 100)
+            self.visibilidadeSlider.setValue(50)
+            self.visibilidadeSlider.setTickPosition(QSlider.TicksBelow)
+            self.visibilidadeSlider.setTickInterval(10)
+            self.visibilidadeSlider.setFixedWidth(150)
 
-            v_layout.addWidget(slider, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(self.visibilidadeSlider, alignment=Qt.AlignmentFlag.AlignCenter)
             v_layout.addWidget(self.value_label)
 
                 
             #radio buttons
             radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Não sei responder")
+            self.radio1 = QRadioButton("Não sei responder")
             
-            radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            radio_layout.addWidget(self.radio1, alignment=Qt.AlignmentFlag.AlignLeft)
 
             radio_layout.setContentsMargins(0, 0, 0, 0)
             radio_layout.setSpacing(10)
@@ -159,7 +161,31 @@ class Pergunta7Window(QWidget):
             self.setLayout(final_layout)
 
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(9)
+        index = self.stacked_widget.currentIndex()
+        self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(11)
-    
+        index = self.stacked_widget.currentIndex()
+        self.responder(index-4)
+        self.stacked_widget.setCurrentIndex(index + 1)
+
+    def responder(self, index):
+        score = Score()
+
+        if self.radio1.isChecked():
+            respostaVolatilidade = None
+            respostaVariedade = None
+            respostaVisibilidade = None
+        else:
+            volatilidade_original = self.volatilidadeSlider.value()
+            variedade_original = self.variedadeSlider.value()
+            visibilidade_original = self.visibilidadeSlider.value()
+
+            respostaVolatilidade = 14+transformar_para_escala_1_3(volatilidade_original)
+            respostaVariedade =  17+transformar_para_escala_1_3(variedade_original)
+            respostaVisibilidade = 20+transformar_para_escala_1_3(visibilidade_original)
+
+        score.adicionarLinha(index, respostaVolatilidade)
+        score.adicionarLinha(index + 1,respostaVariedade)
+        score.adicionarLinha(index + 2, respostaVisibilidade)
+        print("Respostas até agora:", score.getRespostas())
+            
