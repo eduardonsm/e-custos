@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QFrame,QScrollArea, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
+from model.Score import Score
 
 from PySide6.QtCore import Qt
 class Pergunta12Window(QWidget):
@@ -51,10 +52,10 @@ class Pergunta12Window(QWidget):
             layout1.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout1.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             layout1.setContentsMargins(0, 0, 0, 0)
-            radio_group = QButtonGroup(self)
-            radio_group.addButton(radio1, 1)
-            radio_group.addButton(radio2, 2)
-            radio_group.setExclusive(True)
+            self.radioGroupEspecificacao = QButtonGroup(self)
+            self.radioGroupEspecificacao.addButton(radio1, 1)
+            self.radioGroupEspecificacao.addButton(radio2, 2)
+            self.radioGroupEspecificacao.setExclusive(True)
             container = QWidget()
             container.setLayout(layout1)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -67,10 +68,10 @@ class Pergunta12Window(QWidget):
             layout2.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout2.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             layout2.setContentsMargins(0, 0, 0, 0)
-            radio_group = QButtonGroup(self)
-            radio_group.addButton(radio1, 1)
-            radio_group.addButton(radio2, 2)
-            radio_group.setExclusive(True)
+            self.radioGroupDimensao = QButtonGroup(self)
+            self.radioGroupDimensao.addButton(radio1, 1)
+            self.radioGroupDimensao.addButton(radio2, 2)
+            self.radioGroupDimensao.setExclusive(True)
             container = QWidget()
             container.setLayout(layout2)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -83,10 +84,10 @@ class Pergunta12Window(QWidget):
             layout3.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout3.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             layout3.setContentsMargins(0, 0, 0, 0)
-            radio_group = QButtonGroup(self)
-            radio_group.addButton(radio1, 1)
-            radio_group.addButton(radio2, 2)
-            radio_group.setExclusive(True)
+            self.radioGroupMercado = QButtonGroup(self)
+            self.radioGroupMercado.addButton(radio1, 1)
+            self.radioGroupMercado.addButton(radio2, 2)
+            self.radioGroupMercado.setExclusive(True)
             container = QWidget()
             container.setLayout(layout3)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -99,10 +100,10 @@ class Pergunta12Window(QWidget):
             layout4.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout4.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             layout4.setContentsMargins(0, 0, 0, 0)
-            radio_group = QButtonGroup(self)
-            radio_group.addButton(radio1, 1)
-            radio_group.addButton(radio2, 2)
-            radio_group.setExclusive(True)
+            self.radioGroupAtendimento = QButtonGroup(self)
+            self.radioGroupAtendimento.addButton(radio1, 1)
+            self.radioGroupAtendimento.addButton(radio2, 2)
+            self.radioGroupAtendimento.setExclusive(True)
             container = QWidget()
             container.setLayout(layout4)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -115,10 +116,10 @@ class Pergunta12Window(QWidget):
             layout5.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout5.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             layout5.setContentsMargins(0, 0, 0, 0)
-            radio_group = QButtonGroup(self)
-            radio_group.addButton(radio1, 1)
-            radio_group.addButton(radio2, 2)
-            radio_group.setExclusive(True)
+            self.radioGroupMateriaPrima = QButtonGroup(self)
+            self.radioGroupMateriaPrima.addButton(radio1, 1)
+            self.radioGroupMateriaPrima.addButton(radio2, 2)
+            self.radioGroupMateriaPrima.setExclusive(True)
             container = QWidget()
             container.setLayout(layout5)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -131,17 +132,17 @@ class Pergunta12Window(QWidget):
             layout6.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
             layout6.addWidget(radio2, alignment=Qt.AlignmentFlag.AlignLeft)
             layout6.setContentsMargins(0, 0, 0, 0)
-            radio_group = QButtonGroup(self)
-            radio_group.addButton(radio1, 1)
-            radio_group.addButton(radio2, 2)
-            radio_group.setExclusive(True)
+            self.radioGroupProdutosAcabados = QButtonGroup(self)
+            self.radioGroupProdutosAcabados.addButton(radio1, 1)
+            self.radioGroupProdutosAcabados.addButton(radio2, 2)
+            self.radioGroupProdutosAcabados.setExclusive(True)
             container = QWidget()
             container.setLayout(layout6)
             v_layout.addWidget(container, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            radio1 = QRadioButton("Nao sei responder")
-            radio1.setMaximumWidth(300)
-            v_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.naoSeiResponder = QRadioButton("Nao sei responder")
+            self.naoSeiResponder.setMaximumWidth(300)
+            v_layout.addWidget(self.naoSeiResponder, alignment=Qt.AlignmentFlag.AlignCenter)
 
             main_container = QWidget()
             main_container.setLayout(v_layout)
@@ -189,6 +190,34 @@ class Pergunta12Window(QWidget):
             self.setLayout(final_layout)
 
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(14)
+        index = self.stacked_widget.currentIndex()
+        self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(16)
+        index = self.stacked_widget.currentIndex()
+        self.responder(index-1)
+        self.stacked_widget.setCurrentIndex(index + 1)
+    def responder(self, index):
+
+        if self.naoSeiResponder.isChecked():
+            respostaEspecificacao = None
+            respostaDimensao = None
+            respostaMercado = None
+            respostaAtendimento = None
+            respostaMateriaPrima = None
+            respostaProdutosAcabados = None
+        else:
+            respostaEspecificacao = self.radioGroupEspecificacao.id(self.radioGroupEspecificacao.checkedButton())+58
+            respostaDimensao = self.radioGroupDimensao.id(self.radioGroupDimensao.checkedButton())+60
+            respostaMercado = self.radioGroupMercado.id(self.radioGroupMercado.checkedButton())+62
+            respostaAtendimento = self.radioGroupAtendimento.id(self.radioGroupAtendimento.checkedButton())+64
+            respostaMateriaPrima = self.radioGroupMateriaPrima.id(self.radioGroupMateriaPrima.checkedButton())+66
+            respostaProdutosAcabados = self.radioGroupProdutosAcabados.id(self.radioGroupProdutosAcabados.checkedButton())+68
+
+        score = Score()
+        score.adicionarLinha(index, respostaEspecificacao)
+        score.adicionarLinha(index+1, respostaDimensao)
+        score.adicionarLinha(index+2, respostaMercado)
+        score.adicionarLinha(index+3, respostaAtendimento)
+        score.adicionarLinha(index+4, respostaMateriaPrima)
+        score.adicionarLinha(index+5, respostaProdutosAcabados)
+        print("Respostas até agora:", score.getRespostas())
