@@ -25,3 +25,10 @@ class Score:
             return self.respostas[index]
         else:
             return None
+    def SelecionarMetodoPrincipio(self):
+        countNone = 0
+        for resposta in self.respostas:
+            if resposta is None:
+                countNone += 1
+        if countNone > 13:
+            return "respostas insuficientes"
