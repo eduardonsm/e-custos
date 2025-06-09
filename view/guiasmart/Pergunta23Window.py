@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QFrame, QSlider, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QCursor, QPixmap
-
+from model.Score import Score
+from model.utils import transformar_para_escala_1_5
 from PySide6.QtCore import Qt
 class Pergunta23Window(QWidget):
 
@@ -63,9 +64,9 @@ class Pergunta23Window(QWidget):
                 
             #radio buttons
             radio_layout = QVBoxLayout()
-            radio1 = QRadioButton("Não sei responder")
-            
-            radio_layout.addWidget(radio1, alignment=Qt.AlignmentFlag.AlignLeft)
+            self.radio1 = QRadioButton("Não sei responder")
+
+            radio_layout.addWidget(self.radio1, alignment=Qt.AlignmentFlag.AlignLeft)
 
             radio_layout.setContentsMargins(0, 0, 0, 0)
             radio_layout.setSpacing(10)
@@ -106,6 +107,21 @@ class Pergunta23Window(QWidget):
             layout.setSpacing(10)
             self.setLayout(layout)
     def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(25)
+        index = self.stacked_widget.currentIndex()
+        self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
-        self.stacked_widget.setCurrentIndex(27)
+        index = self.stacked_widget.currentIndex()
+        self.responder(index+4)
+        self.stacked_widget.setCurrentIndex(index + 1)
+    def responder(self, index):
+
+        
+        if self.radio1.isChecked():
+            resposta = None
+        else:
+            respostaBruta = self.slider.value()
+            resposta = 122 + transformar_para_escala_1_5(respostaBruta)
+
+        score = Score()
+        score.adicionarLinha(index, resposta)
+        print("Respostas até agora:", score.getRespostas())
