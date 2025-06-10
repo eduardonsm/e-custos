@@ -17,11 +17,10 @@ class Resultado(QWidget):
         h_layout_header = QHBoxLayout()
         titulo = QLabel("MÉTODO E PRINCÍPIO DE CUSTEIO")
         titulo.setObjectName("titulo")
-        titulo.setStyleSheet("font-size: 24px; font-weight: bold; color: #1e3a8a;")
         h_layout_header.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignLeft)
 
         icon = QLabel()
-        pixmap = QPixmap("./images/ecustos-logo.png").scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = QPixmap("./images/ecustos-logo.png").scaled(180, 180, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         icon.setPixmap(pixmap)
         icon.setAlignment(Qt.AlignCenter)
         h_layout_header.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
@@ -42,19 +41,18 @@ class Resultado(QWidget):
         
         pergunta = QLabel('Com base nas suas respostas, a recomendação é:')
         pergunta.setObjectName("pergunta")
-        pergunta.setStyleSheet("font-size: 18px; font-weight: normal;")
         pergunta.setWordWrap(True)
         main_container.addWidget(pergunta)
 
         # Labels que irão mostrar os resultados (iniciam vazios)
         self.metodo_label = QLabel("Método: -")
         self.metodo_label.setObjectName("resultado_metodo")
-        self.metodo_label.setStyleSheet("font-size: 22px; font-weight: bold; color: #15803d;") # Verde
+        self.metodo_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #15803d;") # Verde
         main_container.addWidget(self.metodo_label)
 
         self.principio_label = QLabel("Princípio: -")
         self.principio_label.setObjectName("resultado_principio")
-        self.principio_label.setStyleSheet("font-size: 20px; font-weight: bold; color: #1d4ed8;") # Azul
+        self.principio_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #1d4ed8;") # Azul
         main_container.addWidget(self.principio_label, alignment=Qt.AlignmentFlag.AlignTop)
         
         layout.addLayout(main_container)
