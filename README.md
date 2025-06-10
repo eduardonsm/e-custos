@@ -20,4 +20,17 @@ Facilitar o acesso e controle de informações no contexto da disciplina de Cust
 - Login com validação
 - Armazenamento seguro em banco SQLite
 
+## Instalação
+
+```bash
+git clone https://github.com/eduardonsm/e-custos.git
+cd e-custos
+pip install -r requirements.txt
+```
+
+## Como usar
+
+```bash
+python login_system.py
+```
 em desenvolvimento...
