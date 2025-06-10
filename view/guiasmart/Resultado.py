@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QFrame, QScrollArea, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QPushButton, QSizePolicy
-from PySide6.QtGui import QPixmap, QCursor
+from PySide6.QtGui import QPixmap, QCursor, QFont
 from PySide6.QtCore import Qt
+
 from model.Score import Score
 
 class Resultado(QWidget):
@@ -42,18 +43,24 @@ class Resultado(QWidget):
         pergunta = QLabel('Com base nas suas respostas, a recomendação é:')
         pergunta.setObjectName("pergunta")
         pergunta.setWordWrap(True)
-        main_container.addWidget(pergunta)
+        pergunta.setMinimumHeight(100)
+        pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        main_container.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignCenter)
+        pergunta.setFont(QFont("Inter", 24, QFont.Bold))
+        pergunta.setStyleSheet("font-size: 32px; font-weight: bold; color: #0f0b0b; padding: 15px;") # Preto
 
         # Labels que irão mostrar os resultados (iniciam vazios)
         self.metodo_label = QLabel("Método: -")
         self.metodo_label.setObjectName("resultado_metodo")
-        self.metodo_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #15803d;") # Verde
-        main_container.addWidget(self.metodo_label)
+        self.metodo_label.setFont(QFont("Inter", 24, QFont.Bold))
+        self.metodo_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #15803d; padding: 5px;") # Verde
+        main_container.addWidget(self.metodo_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.principio_label = QLabel("Princípio: -")
         self.principio_label.setObjectName("resultado_principio")
-        self.principio_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #1d4ed8;") # Azul
-        main_container.addWidget(self.principio_label, alignment=Qt.AlignmentFlag.AlignTop)
+        self.principio_label.setFont(QFont("Inter", 24, QFont.Bold))
+        self.principio_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #1d4ed8; padding: 5px;") # Azul
+        main_container.addWidget(self.principio_label, alignment=Qt.AlignmentFlag.AlignCenter)
         
         layout.addLayout(main_container)
         layout.addStretch() # Adiciona espaço flexível para empurrar os botões para baixo
@@ -72,13 +79,11 @@ class Resultado(QWidget):
         voltar = QPushButton("◄ VOLTAR")
         voltar.setCursor(QCursor(Qt.PointingHandCursor))
         voltar.clicked.connect(self.switch_to_previous)
-        voltar.setStyleSheet("padding: 10px; font-size: 16px;")
         botoes_layout.addWidget(voltar, alignment=Qt.AlignmentFlag.AlignLeft)
 
-        avancar = QPushButton("FINALIZAR ►")
+        avancar = QPushButton("SAIR ►")
         avancar.setCursor(QCursor(Qt.PointingHandCursor))
         avancar.clicked.connect(self.avancar)
-        avancar.setStyleSheet("padding: 10px; font-size: 16px; font-weight: bold;")
         botoes_layout.addWidget(avancar, alignment=Qt.AlignmentFlag.AlignRight)
         
         layout.addLayout(botoes_layout)

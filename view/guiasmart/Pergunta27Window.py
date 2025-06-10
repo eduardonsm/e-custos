@@ -101,7 +101,7 @@ class Pergunta27Window(QWidget):
             container.addWidget(voltar, alignment=Qt.AlignmentFlag.AlignLeft)
 
             #botao de avancar
-            avancar = QPushButton("PODE AVANÇAR!")
+            avancar = QPushButton("FINALIZAR ►")
             avancar.setCursor(QCursor(Qt.PointingHandCursor))
             avancar.clicked.connect(self.avancar)
             container.addWidget(avancar, alignment=Qt.AlignmentFlag.AlignRight)
