@@ -1,98 +1,130 @@
-from PySide6.QtWidgets import QFrame, QScrollArea,QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QButtonGroup, QPushButton, QMessageBox, QStackedWidget
-from PySide6.QtWidgets import QSizePolicy
-from PySide6.QtGui import QCursor, QPixmap
-from model.Score import Score
+from PySide6.QtWidgets import QFrame, QScrollArea, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QPushButton, QSizePolicy
+from PySide6.QtGui import QPixmap, QCursor
 from PySide6.QtCore import Qt
+from model.Score import Score
+
 class Resultado(QWidget):
-
     def __init__(self, stacked_widget):
-            super().__init__()
-            self.stacked_widget = stacked_widget
-            layout = QVBoxLayout()
+        super().__init__()
+        self.stacked_widget = stacked_widget
+        
+        # --- Layout Principal ---
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 5, 20, 20)
+        layout.setSpacing(15)
 
-            #header
-            h_layout = QHBoxLayout()
-            titulo = QLabel("METODO E PRINCIPIO DE CUSTEIO")
-            titulo.setObjectName("titulo")
+        # --- Header ---
+        h_layout_header = QHBoxLayout()
+        titulo = QLabel("MÉTODO E PRINCÍPIO DE CUSTEIO")
+        titulo.setObjectName("titulo")
+        titulo.setStyleSheet("font-size: 24px; font-weight: bold; color: #1e3a8a;")
+        h_layout_header.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignLeft)
 
-            h_layout.addWidget(titulo, alignment=Qt.AlignmentFlag.AlignLeft)
-            icon = QLabel()
-            pixmap = QPixmap("./images/ecustos-logo.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            icon.setPixmap(pixmap)
-            icon.setAlignment(Qt.AlignCenter)
-            h_layout.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
+        icon = QLabel()
+        pixmap = QPixmap("./images/ecustos-logo.png").scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        icon.setPixmap(pixmap)
+        icon.setAlignment(Qt.AlignCenter)
+        h_layout_header.addWidget(icon, alignment=Qt.AlignmentFlag.AlignRight)
+        
+        layout.addLayout(h_layout_header)
 
-            container = QWidget()
-            container.setLayout(h_layout)
-            layout.addWidget(container)
-            # separando
-            line = QFrame()
-            line.setFrameShape(QFrame.HLine)
-            line.setFrameShadow(QFrame.Sunken)
-            line.setStyleSheet("color: #8faadc; background-color: #8faadc; height: 3px;")
-            layout.addWidget(line)
+        # --- Linha Separadora ---
+        line1 = QFrame()
+        line1.setFrameShape(QFrame.HLine)
+        line1.setFrameShadow(QFrame.Sunken)
+        line1.setStyleSheet("color: #8faadc; background-color: #8faadc; height: 2px;")
+        layout.addWidget(line1)
 
-            # main
-            h_layout = QHBoxLayout()
-            pergunta = QLabel('Seu metodo de custeio e principio foram:')
-            pergunta.setObjectName("pergunta")
-            pergunta.setWordWrap(True)
-            pergunta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            h_layout.addWidget(pergunta, alignment=Qt.AlignmentFlag.AlignLeft)           
+        # --- Seção de Resultados ---
+        main_container = QVBoxLayout()
+        main_container.setSpacing(10)
+        main_container.setContentsMargins(20, 10, 20, 20)
+        
+        pergunta = QLabel('Com base nas suas respostas, a recomendação é:')
+        pergunta.setObjectName("pergunta")
+        pergunta.setStyleSheet("font-size: 18px; font-weight: normal;")
+        pergunta.setWordWrap(True)
+        main_container.addWidget(pergunta)
 
-            main_container = QWidget()
-            main_container.setLayout(h_layout)
-            layout.addWidget(main_container)
+        # Labels que irão mostrar os resultados (iniciam vazios)
+        self.metodo_label = QLabel("Método: -")
+        self.metodo_label.setObjectName("resultado_metodo")
+        self.metodo_label.setStyleSheet("font-size: 22px; font-weight: bold; color: #15803d;") # Verde
+        main_container.addWidget(self.metodo_label)
 
-            # separando
-            line = QFrame()
-            line.setFrameShape(QFrame.HLine)
-            line.setFrameShadow(QFrame.Sunken)
-            line.setStyleSheet("color: #8faadc; background-color: #8faadc; height: 3px;")
-            layout.addWidget(line)
+        self.principio_label = QLabel("Princípio: -")
+        self.principio_label.setObjectName("resultado_principio")
+        self.principio_label.setStyleSheet("font-size: 20px; font-weight: bold; color: #1d4ed8;") # Azul
+        main_container.addWidget(self.principio_label, alignment=Qt.AlignmentFlag.AlignTop)
+        
+        layout.addLayout(main_container)
+        layout.addStretch() # Adiciona espaço flexível para empurrar os botões para baixo
 
-            container = QHBoxLayout()
-            #botao de voltar
-            voltar = QPushButton("VOLTAR PARA A TELA ANTERIOR!")
-            voltar.setCursor(QCursor(Qt.PointingHandCursor))
-            voltar.clicked.connect(self.switch_to_welcome)
-            container.addWidget(voltar, alignment=Qt.AlignmentFlag.AlignLeft)
+        # --- Linha Separadora ---
+        line2 = QFrame()
+        line2.setFrameShape(QFrame.HLine)
+        line2.setFrameShadow(QFrame.Sunken)
+        line2.setStyleSheet("color: #8faadc; background-color: #8faadc; height: 2px;")
+        layout.addWidget(line2)
 
-            #botao de avancar
-            avancar = QPushButton("PODE AVANÇAR!")
-            avancar.setCursor(QCursor(Qt.PointingHandCursor))
-            avancar.clicked.connect(self.avancar)
-            container.addWidget(avancar, alignment=Qt.AlignmentFlag.AlignRight)
+        # --- Botões de Navegação ---
+        botoes_layout = QHBoxLayout()
+        botoes_layout.setContentsMargins(50, 10, 50, 0)
 
-            container.setContentsMargins(50, 0, 50, 0)
-            layout.addLayout(container)
+        voltar = QPushButton("◄ VOLTAR")
+        voltar.setCursor(QCursor(Qt.PointingHandCursor))
+        voltar.clicked.connect(self.switch_to_previous)
+        voltar.setStyleSheet("padding: 10px; font-size: 16px;")
+        botoes_layout.addWidget(voltar, alignment=Qt.AlignmentFlag.AlignLeft)
 
-            #adicionando o layout ao widget
-            layout.setContentsMargins(20, 5, 20, 20)
-            layout.setSpacing(10)
-            scroll_area = QScrollArea()
-            scroll_area.setWidgetResizable(True)
+        avancar = QPushButton("FINALIZAR ►")
+        avancar.setCursor(QCursor(Qt.PointingHandCursor))
+        avancar.clicked.connect(self.avancar)
+        avancar.setStyleSheet("padding: 10px; font-size: 16px; font-weight: bold;")
+        botoes_layout.addWidget(avancar, alignment=Qt.AlignmentFlag.AlignRight)
+        
+        layout.addLayout(botoes_layout)
 
-            # Conteúdo real da tela
-            content_widget = QWidget()
-            content_widget.setLayout(layout)
+    def showEvent(self, event):
+        """
+        Esta função é chamada automaticamente toda vez que a tela (widget) se torna visível.
+        É o lugar perfeito para carregar e exibir os resultados.
+        """
+        super().showEvent(event)
+        self.carregar_e_exibir_resultados()
 
-            scroll_area.setWidget(content_widget)
-
-            # Layout final da tela com rolagem
-            final_layout = QVBoxLayout()
-            final_layout.addWidget(scroll_area)
-            self.setLayout(final_layout)
-
-    def switch_to_welcome(self):
-        index = self.stacked_widget.currentIndex()
-        self.stacked_widget.setCurrentIndex(index -1)
-    def avancar(self):
-        index = self.stacked_widget.currentIndex()
-        self.responder(index+4)
-        self.stacked_widget.setCurrentIndex(index + 1)
-    def responder(self, index):
+    def carregar_e_exibir_resultados(self):
+        """
+        Pega a instância do Score, calcula o resultado e atualiza os labels na tela.
+        """
         score = Score()
+        # Usei o nome do método do seu código original.
+        # Ele deve retornar uma tupla com (metodo, principio)
+        # Ex: ('RKW', 'Integral')
         resultado = score.SelecionarMetodoPrincipio()
-        print("Respostas até agora:", score.getRespostas())
-        print("resultado:", resultado)
+        
+        print("Respostas analisadas:", score.getRespostas())
+        print("Resultado calculado:", resultado)
+
+        if resultado and len(resultado) >= 2:
+            metodo, principio = resultado[0], resultado[1]
+            # Atualiza o texto dos labels que criamos no __init__
+            self.metodo_label.setText(f"Método: {metodo}")
+            self.principio_label.setText(f"Princípio: {principio}")
+        else:
+            # Caso algo dê errado no cálculo
+            self.metodo_label.setText("Método: Não foi possível determinar")
+            self.principio_label.setText("Princípio: Indefinido")
+
+    def switch_to_previous(self):
+        index = self.stacked_widget.currentIndex()
+        if index > 0:
+            self.stacked_widget.setCurrentIndex(index - 1)
+
+    def avancar(self):
+        # Aqui você pode colocar a lógica para ir para uma próxima tela
+        # ou talvez fechar a aplicação. Removi o cálculo daqui.
+        print("Botão 'Avançar/Finalizar' clicado!")
+        index = self.stacked_widget.currentIndex()
+        # Exemplo: self.stacked_widget.setCurrentIndex(index + 1)
+        # ou self.window().close() para fechar

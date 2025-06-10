@@ -119,7 +119,7 @@ class Pergunta14Window(QWidget):
         self.stacked_widget.setCurrentIndex(index -1)
     def avancar(self):
         index = self.stacked_widget.currentIndex()
-        self.responder(index+4)
+        self.responder(index+9)
         self.stacked_widget.setCurrentIndex(index + 1)
     def responder(self, index):
         checked_button = self.radio_group.checkedButton()
