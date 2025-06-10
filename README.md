@@ -34,3 +34,5 @@ pip install -r requirements.txt
 python login_system.py
 ```
 em desenvolvimento...
+![GitHub license](https://img.shields.io/github/license/eduardonsm/e-custos)
+![Python](https://img.shields.io/badge/python-3.12%2B-green)
