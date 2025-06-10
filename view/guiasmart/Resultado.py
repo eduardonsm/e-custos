@@ -93,6 +93,6 @@ class Resultado(QWidget):
         self.stacked_widget.setCurrentIndex(index + 1)
     def responder(self, index):
         score = Score()
-        countNone = score.SelecionarMetodoPrincipio()
+        resultado = score.SelecionarMetodoPrincipio()
         print("Respostas até agora:", score.getRespostas())
-        print("Contagem de respostas não selecionadas:", countNone)
+        print("resultado:", resultado)
