@@ -32,6 +32,7 @@ from view.guiasmart.Pergunta26Window import Pergunta26Window
 from view.guiasmart.Pergunta27Window import Pergunta27Window
 from view.guiasmart.Resultado import Resultado
 from view.HomeWindow import HomeWindow
+from view.RegisterCostWindow import RegisterCostWindow
 
 # Configuração do banco de dados
 def create_db():
@@ -98,6 +99,7 @@ class LoginApp(QWidget):
         self.pergunta27_window = Pergunta27Window(self.stacked_widget)
         self.resultado_window = Resultado(self.stacked_widget)
         self.home_window = HomeWindow(self.stacked_widget)
+        self.register_cost_window = RegisterCostWindow(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
@@ -129,6 +131,8 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.pergunta27_window)
         self.stacked_widget.addWidget(self.resultado_window)
         self.stacked_widget.addWidget(self.home_window)
+        self.stacked_widget.addWidget(self.register_cost_window)
+
 
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
