@@ -100,6 +100,4 @@ class Resultado(QWidget):
             self.stacked_widget.setCurrentIndex(self.stacked_widget.currentIndex() - 1)
 
     def avancar(self):
-        print("Botão 'Avançar/Finalizar' clicado!")
-        # self.stacked_widget.setCurrentIndex(self.stacked_widget.currentIndex() + 1)
-        # ou self.window().close()
+        self.stacked_widget.setCurrentIndex(2)
