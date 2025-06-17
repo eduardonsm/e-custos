@@ -56,8 +56,8 @@ class LoginWindow(QWidget):
     def authenticate_user(self):
         user = UserRepository.authenticate_user(self)
         if user:
-            Session.user_id = user[0] 
-            Session.username = user[1]
+            session = Session()
+            session.set_user(user_id=user[0], username=user[1])
             QMessageBox.information(self, "Sucesso", "Login realizado com sucesso!")
             self.stacked_widget.setCurrentIndex(2)  
         else:

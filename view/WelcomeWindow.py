@@ -138,8 +138,14 @@ class Welcome(QWidget):
             if btn.isChecked():
                 metodo = btn.text()
                 break
-            #colocar verificações
-        self.update_principio_metodo(Session.user_id, metodo, principio)
+
+        session = Session()
+        self.update_principio_metodo(session.user_id, metodo, principio)
+        
+        home_screen = self.stacked_widget.widget(29)
+        home_screen.update_user_info()
+        self.stacked_widget.setCurrentIndex(29)
+        self.stacked_widget.setCurrentIndex(29)
 
     def update_principio_metodo(self, user_id, metodo, principio):
         conn = sqlite3.connect("model/LoginSystem.db")
