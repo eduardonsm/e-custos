@@ -94,12 +94,12 @@ class RegisterCostWindow(QWidget):
         # É variável? (QRadioButton com texto claro)
         variavel_layout = QHBoxLayout()
         variavel_label = QLabel("Este custo é variável?")
-        variavel_label.setObjectName("variavel_custo_label") # Nome de objeto para estilo
+        variavel_label.setObjectName("variavel_custo_label") 
         self.variavel_custo_radio = QRadioButton("Sim")
         self.variavel_custo_radio.setObjectName("variavel_custo_radio")
         variavel_layout.addWidget(variavel_label)
         variavel_layout.addWidget(self.variavel_custo_radio)
-        variavel_layout.addStretch(1) # Empurra para a esquerda
+        variavel_layout.addStretch(1) 
         form_layout.addLayout(variavel_layout)
 
         scroll_area = QScrollArea()

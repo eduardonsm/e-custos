@@ -59,7 +59,10 @@ class LoginWindow(QWidget):
             session = Session()
             session.set_user(user_id=user[0], username=user[1])
             QMessageBox.information(self, "Sucesso", "Login realizado com sucesso!")
-            self.stacked_widget.setCurrentIndex(2)  
+            if UserRepository.have_methods_or_principles(self,user[0]):
+                self.stacked_widget.setCurrentIndex(29)
+            else:
+                self.stacked_widget.setCurrentIndex(2)
         else:
             QMessageBox.warning(self, "Erro", "Usuário ou senha incorretos!")
     

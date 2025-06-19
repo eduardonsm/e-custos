@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QIcon, QPixmap
 from components.CustomRadioButton import CustomRadioButton
 from model.Session import Session
-import sqlite3
+from model.UserRepository import UserRepository
 
 from PySide6.QtCore import Qt
 class Welcome(QWidget):
@@ -140,19 +140,17 @@ class Welcome(QWidget):
                 break
 
         session = Session()
-        self.update_principio_metodo(session.user_id, metodo, principio)
+        user_id = session.user_id
+
+        if user_id: 
+            UserRepository.update_principio_metodo(self,user_id, metodo, principio)
+            QMessageBox.information(self, "Sucesso", "Método e Princípio salvos com sucesso!")
+        else:
+            QMessageBox.warning(self, "Erro", "Usuário não logado ou ID de usuário não encontrado.")
+
         
         home_screen = self.stacked_widget.widget(29)
         home_screen.update_user_info()
         self.stacked_widget.setCurrentIndex(29)
 
-    def update_principio_metodo(self, user_id, metodo, principio):
-        conn = sqlite3.connect("model/LoginSystem.db")
-        cursor = conn.cursor()
-        cursor.execute("""
-            UPDATE users
-            SET metodo = ?, principio = ?
-            WHERE id = ?
-        """, (metodo, principio, user_id))
-        conn.commit()
-        conn.close()
+    

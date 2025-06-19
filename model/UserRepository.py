@@ -27,3 +27,28 @@ class UserRepository:
             user = cursor.fetchone()
             conn.close()
             return user
+    def have_methods_or_principles(self, user_id):
+        conn = sqlite3.connect("model/LoginSystem.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT metodo, principio
+            FROM users
+            WHERE id = ?
+        """, (user_id,))
+        result = cursor.fetchone()
+        conn.close()
+
+        if result:
+            metodo, principio = result
+            return (metodo is not None and metodo != '') or (principio is not None and principio != '')
+        return False
+    def update_principio_metodo(self, user_id, metodo, principio):
+        conn = sqlite3.connect("model/LoginSystem.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE users
+            SET metodo = ?, principio = ?
+            WHERE id = ?
+        """, (metodo, principio, user_id))
+        conn.commit()
+        conn.close()
