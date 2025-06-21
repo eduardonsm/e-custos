@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QPushButton, QStackedWidget
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QPushButton, QButtonGroup
 from PySide6.QtWidgets import QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox, QMessageBox, QSizePolicy , QScrollArea
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, QDate # Importar QDate para QDateEdit
@@ -8,7 +8,7 @@ import sqlite3 # Necessário para a função cadastrar_custo
 
 
 class RegisterCostWindow(QWidget):
-    def __init__(self, stacked_widget): # 
+    def __init__(self, stacked_widget): 
         super().__init__()
         self.stacked_widget = stacked_widget
         self.init_ui()
@@ -54,7 +54,7 @@ class RegisterCostWindow(QWidget):
 
         # --- Título do Formulário ---
         form_title = QLabel("Registrar Novo Custo")
-        form_title.setObjectName("form_title") # Para aplicar estilo via QSS
+        form_title.setObjectName("pergunta")
         form_title.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(form_title)
 
@@ -76,44 +76,104 @@ class RegisterCostWindow(QWidget):
         self.valor_custo_input.setMaximum(999999999.99)
         self.valor_custo_input.setPrefix("R$ ")
         self.valor_custo_input.setDecimals(2)
-        form_layout.addWidget(valor_widget, alignment=Qt.AlignCenter)
-
-        # Data do Custo (usar QDateEdit para datas)
-        data_widget = self.create_label_and_input("Data do Custo:", "data_custo", QDateEdit())
-        self.data_custo_input = data_widget.findChild(QDateEdit, "data_custo_input")
-        self.data_custo_input.setDate(QDate.currentDate()) # Data atual como padrão
-        self.data_custo_input.setCalendarPopup(True) # Abrir calendário
-        form_layout.addWidget(data_widget, alignment=Qt.AlignCenter)
+        form_layout.addWidget(valor_widget)
 
         # Categoria do Custo (usar QComboBox para lista de opções)
         categoria_widget = self.create_label_and_input("Categoria do Custo:", "categoria_custo", QComboBox())
         self.categoria_custo_input = categoria_widget.findChild(QComboBox, "categoria_custo_input")
         self.categoria_custo_input.addItems(["Alimentação", "Transporte", "Moradia", "Lazer", "Educação", "Saúde", "Outros"])
-        form_layout.addWidget(categoria_widget, alignment=Qt.AlignCenter)
+        form_layout.addWidget(categoria_widget)
 
-        # É variável? (QRadioButton com texto claro)
+        # Classificacao custo (variabilidade e alocaçao)
         variavel_layout = QHBoxLayout()
-        variavel_label = QLabel("Este custo é variável?")
-        variavel_label.setObjectName("variavel_custo_label") 
-        self.variavel_custo_radio = QRadioButton("Sim")
-        self.variavel_custo_radio.setObjectName("variavel_custo_radio")
-        variavel_layout.addWidget(variavel_label)
-        variavel_layout.addWidget(self.variavel_custo_radio)
+        direto_label = QLabel("Este custo é :")
+        
+        self.direto_radio = QRadioButton("Direto")
+        self.direto_radio.setChecked(True)
+        self.indireto_radio = QRadioButton("Indireto")
+        diretoIndiretoGroup = QButtonGroup(self)
+        diretoIndiretoGroup.addButton(self.direto_radio, 1)
+        diretoIndiretoGroup.addButton(self.indireto_radio, 2)
+        diretoIndiretoGroup.setExclusive(True)
+        variavel_layout.addWidget(direto_label)
+        variavel_layout.addWidget(self.direto_radio)
+        variavel_layout.addWidget(self.indireto_radio)
         variavel_layout.addStretch(1) 
+
+        variavel_label = QLabel("Este custo é :")
+        self.fixo_radio = QRadioButton("Fixo")
+        self.fixo_radio.setChecked(True)
+        self.variavel_radio = QRadioButton("Variavel")
+        fixoVariavelGroup = QButtonGroup(self)
+        fixoVariavelGroup.addButton(self.fixo_radio, 1)
+        fixoVariavelGroup.addButton(self.variavel_radio, 2)
+        fixoVariavelGroup.setExclusive(True)
+        
+        variavel_layout.addWidget(variavel_label)
+        variavel_layout.addWidget(self.fixo_radio)
+        variavel_layout.addWidget(self.variavel_radio)
+        variavel_layout.addStretch(1) 
+
         form_layout.addLayout(variavel_layout)
+
+        # Classificacao custo (tomada de decisao e eliminacao)
+        classificacao2_layout = QHBoxLayout()
+        label = QLabel("Este custo é :")
+        
+        self.relevante_radio = QRadioButton("Relevante")
+        self.relevante_radio.setChecked(True)
+        self.naorelevante_radio = QRadioButton("Nao Relevante")
+        relevanciaGroup = QButtonGroup(self)
+        relevanciaGroup.addButton(self.relevante_radio, 1)
+        relevanciaGroup.addButton(self.naorelevante_radio, 2)
+        relevanciaGroup.setExclusive(True)
+        classificacao2_layout.addWidget(label)
+        classificacao2_layout.addWidget(self.relevante_radio)
+        classificacao2_layout.addWidget(self.naorelevante_radio)
+        classificacao2_layout.addStretch(1) 
+
+        label = QLabel("Este custo é :")
+        self.eliminavel_radio = QRadioButton("Eliminavel")
+        self.eliminavel_radio.setChecked(True)
+        self.naoEliminavel_radio = QRadioButton("Nao Eliminavel")
+        eliminavelnaoEliminavelGroup = QButtonGroup(self)
+        eliminavelnaoEliminavelGroup.addButton(self.eliminavel_radio, 1)
+        eliminavelnaoEliminavelGroup.addButton(self.naoEliminavel_radio, 2)
+        eliminavelnaoEliminavelGroup.setExclusive(True)
+        classificacao2_layout.addWidget(label)
+        classificacao2_layout.addWidget(self.eliminavel_radio)
+        classificacao2_layout.addWidget(self.naoEliminavel_radio)
+        classificacao2_layout.addStretch(1) 
+        form_layout.addLayout(classificacao2_layout)
+
+        # Classificacao custo (oculto)
+        classificacao3_layout = QHBoxLayout()
+        label = QLabel("Este custo é :")
+        
+        self.oculto_radio = QRadioButton("Oculto")
+        self.oculto_radio.setChecked(True)
+        self.naooculto_radio = QRadioButton("Nao Oculto")
+        ocultoGroup = QButtonGroup(self)
+        ocultoGroup.addButton(self.oculto_radio, 1)
+        ocultoGroup.addButton(self.naooculto_radio, 2)
+        ocultoGroup.setExclusive(True)
+        classificacao3_layout.addWidget(label)
+        classificacao3_layout.addWidget(self.oculto_radio)
+        classificacao3_layout.addWidget(self.naooculto_radio)
+        classificacao3_layout.addStretch(1) 
+
+        form_layout.addLayout(classificacao3_layout)
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)  # Faz com que o conteúdo se ajuste
 
         scroll_widget = QWidget()
-        scroll_widget.setLayout(form_layout)  # Põe o formulário dentro do widget de scroll
-
+        scroll_widget.setLayout(form_layout)
         scroll_area.setWidget(scroll_widget)
 
-        main_layout.addWidget(scroll_area, alignment=Qt.AlignCenter)
+        main_layout.addWidget(scroll_area)
         # --- Botão de Cadastro ---
         cadastrar_button = QPushButton("Cadastrar Custo")
-        cadastrar_button.setObjectName("cadastrar_button") # Para estilo
         cadastrar_button.clicked.connect(self.cadastrar_custo)
         
         # Centraliza o botão
@@ -138,12 +198,12 @@ class RegisterCostWindow(QWidget):
         
         label = QLabel(label_text)
         label.setObjectName(f"{object_name_prefix}_label") # Ex: "nome_custo_label"
-        layout.addWidget(label, alignment=Qt.AlignCenter)
+        layout.addWidget(label)
         
         input_widget.setObjectName(f"{object_name_prefix}_input") # Ex: "nome_custo_input"
         input_widget.setMinimumWidth(300) # Largura mínima para os inputs
         input_widget.setMaximumWidth(600) # Largura máxima para os inputs
-        layout.addWidget(input_widget, alignment=Qt.AlignCenter) 
+        layout.addWidget(input_widget) 
         
         return container
 
@@ -151,7 +211,6 @@ class RegisterCostWindow(QWidget):
         # Limpa a sessão ao sair
         Session.user_id = None
         Session.username = None
-        # self.switch_window_callback('welcome') # Use o callback para ir para a Welcome (ou Login)
         self.stacked_widget.setCurrentIndex(0) # Volta para a tela de login (assumindo índice 0)
 
 
@@ -166,10 +225,20 @@ class RegisterCostWindow(QWidget):
 
         self.perfil_label.setText(f"Conectado: {username_display}")
 
+    
     def cadastrar_custo(self):
+        """
+            nome
+            valor
+            categoria (centro de custo?)
+            variabilidade
+            alocacao
+            tomada de decisao
+            eliminavel
+            oculto
+        """
         nome = self.nome_custo_input.text()
         valor = self.valor_custo_input.value() # Use .value() para QDoubleSpinBox
-        data = self.data_custo_input.date().toString(Qt.ISODate) # Formato YYYY-MM-DD
         categoria = self.categoria_custo_input.currentText()
         is_variavel = self.variavel_custo_radio.isChecked()
 
