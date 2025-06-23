@@ -2,7 +2,8 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxL
 from PySide6.QtWidgets import QLineEdit, QComboBox, QDoubleSpinBox, QMessageBox , QScrollArea
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
-from model.Session import Session # Assumindo que Session está em model/Session.py
+from model.Session import Session
+from viewModel.CostController import CostController
 
 class RegisterCostWindow(QWidget):
     def __init__(self, stacked_widget): 
@@ -243,12 +244,18 @@ class RegisterCostWindow(QWidget):
         is_eliminavel = self.eliminavel_radio.isChecked()
         is_oculto = self.oculto_radio.isChecked()
 
+        
         # Validação simples
         if not nome or valor <= 0:
             QMessageBox.warning(self, "Erro de Entrada", "Por favor, preencha o nome do custo e um valor válido.")
             return
 
         try:
+            session = Session()
+            id = session.user_id
+            costController = CostController()
+            costController.add_cost_to_db(nome, valor, categoria, is_direto, is_fixo, is_relevante, is_eliminavel, is_oculto, id)
+
             print(f"Registrando custo: {nome}, Valor: {valor}, Categoria: {categoria}, Direto: {is_direto}, Fixo: {is_fixo}, Relevante: {is_relevante}, Eliminável: {is_eliminavel}, Oculto: {is_oculto}")
 
         except Exception as e:

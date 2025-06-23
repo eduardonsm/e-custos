@@ -1,5 +1,5 @@
 import sys
-import sqlite3
+import model.UserRepository as userRepository
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
 from PySide6.QtGui import QIcon
 from view.LoginWindow import LoginWindow
@@ -33,24 +33,6 @@ from view.guiasmart.Pergunta27Window import Pergunta27Window
 from view.guiasmart.Resultado import Resultado
 from view.HomeWindow import HomeWindow
 from view.RegisterCostWindow import RegisterCostWindow
-
-# Configuração do banco de dados
-def create_db():
-    conn = sqlite3.connect("model/LoginSystem.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL,
-         email TEXT NOT NULL UNIQUE,
-        metodo TEXT,
-        principio TEXT
-    );
-    """)
-    conn.commit()
-    conn.close()
-
 
 def load_stylesheet(app, file_name="style.qss"):
         try:
@@ -133,7 +115,6 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.home_window)
         self.stacked_widget.addWidget(self.register_cost_window)
 
-
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
         self.setLayout(layout)
@@ -148,7 +129,8 @@ class LoginApp(QWidget):
 
 # Execução da aplicação
 if __name__ == "__main__":
-    create_db()
+    userRepository.UserRepository.create_dbUsers()
+    userRepository.UserRepository.create_dbCosts()
     app = QApplication(sys.argv)
     load_stylesheet(app)
     window = LoginApp()
