@@ -1,11 +1,8 @@
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QPushButton, QButtonGroup
-from PySide6.QtWidgets import QLineEdit, QComboBox, QDateEdit, QDoubleSpinBox, QMessageBox, QSizePolicy , QScrollArea
+from PySide6.QtWidgets import QLineEdit, QComboBox, QDoubleSpinBox, QMessageBox , QScrollArea
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import Qt, QDate # Importar QDate para QDateEdit
-from components.CustomRadioButton import CustomRadioButton # Se ainda for usar, mas QRadioButton padrão é suficiente aqui
+from PySide6.QtCore import Qt
 from model.Session import Session # Assumindo que Session está em model/Session.py
-import sqlite3 # Necessário para a função cadastrar_custo
-
 
 class RegisterCostWindow(QWidget):
     def __init__(self, stacked_widget): 
@@ -66,9 +63,9 @@ class RegisterCostWindow(QWidget):
         form_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter) # Alinha o formulário ao topo e centraliza horizontalmente
 
         # Nome do Custo
-        form_layout.addWidget(self.create_label_and_input("Nome do Custo:", "nome_custo", QLineEdit()))
-        self.nome_custo_input = self.findChild(QLineEdit, "nome_custo_input") # Acessa o QLineEdit pelo objectName
-
+        nome_widget = self.create_label_and_input("Nome do Custo:", "nome_custo", QLineEdit())
+        self.nome_custo_input = nome_widget.findChild(QLineEdit, "nome_custo_input") # Acessa o QLineEdit pelo objectName
+        form_layout.addWidget(nome_widget)
         # Valor do Custo (usar QDoubleSpinBox para valores monetários)
         valor_widget = self.create_label_and_input("Valor do Custo:", "valor_custo", QDoubleSpinBox())
         self.valor_custo_input = valor_widget.findChild(QDoubleSpinBox, "valor_custo_input")
@@ -79,7 +76,7 @@ class RegisterCostWindow(QWidget):
         form_layout.addWidget(valor_widget)
 
         # Categoria do Custo (usar QComboBox para lista de opções)
-        categoria_widget = self.create_label_and_input("Categoria do Custo:", "categoria_custo", QComboBox())
+        categoria_widget = self.create_label_and_input("Centro de Custo:", "categoria_custo", QComboBox())
         self.categoria_custo_input = categoria_widget.findChild(QComboBox, "categoria_custo_input")
         self.categoria_custo_input.addItems(["Alimentação", "Transporte", "Moradia", "Lazer", "Educação", "Saúde", "Outros"])
         form_layout.addWidget(categoria_widget)
@@ -238,9 +235,13 @@ class RegisterCostWindow(QWidget):
             oculto
         """
         nome = self.nome_custo_input.text()
-        valor = self.valor_custo_input.value() # Use .value() para QDoubleSpinBox
+        valor = self.valor_custo_input.value() 
         categoria = self.categoria_custo_input.currentText()
-        is_variavel = self.variavel_custo_radio.isChecked()
+        is_direto = self.direto_radio.isChecked()
+        is_fixo = self.fixo_radio.isChecked()
+        is_relevante = self.relevante_radio.isChecked()
+        is_eliminavel = self.eliminavel_radio.isChecked()
+        is_oculto = self.oculto_radio.isChecked()
 
         # Validação simples
         if not nome or valor <= 0:
@@ -248,7 +249,7 @@ class RegisterCostWindow(QWidget):
             return
 
         try:
-            QMessageBox.information(self, "Custo Cadastrado", f"Custo '{nome}' cadastrado com sucesso!")
+            print(f"Registrando custo: {nome}, Valor: {valor}, Categoria: {categoria}, Direto: {is_direto}, Fixo: {is_fixo}, Relevante: {is_relevante}, Eliminável: {is_eliminavel}, Oculto: {is_oculto}")
 
         except Exception as e:
             QMessageBox.critical(self, "Erro no Banco de Dados", f"Ocorreu um erro ao cadastrar o custo: {e}")
