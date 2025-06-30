@@ -30,7 +30,7 @@ class HomeWindow(QWidget):
 
         sair = QPushButton("Sair")
         sair.setObjectName("sair")
-        sair.clicked.connect(self.switch_to_welcome)
+        sair.clicked.connect(self.switch_to_login)
         header_layout.addWidget(sair)
 
         self.perfil = QLabel()
@@ -56,9 +56,9 @@ class HomeWindow(QWidget):
         main_layout.setSpacing(10) 
         self.setLayout(main_layout)
 
-    def switch_to_welcome(self):
-        # Função para mudar para a tela de seleção
-        self.stacked_widget.setCurrentIndex(2)
+    def switch_to_login(self):
+        # Função para mudar para a tela de login
+        self.stacked_widget.setCurrentIndex(0)
     def update_user_info(self):
         session = Session()
         username_display = session.username if session.username is not None else "Não Conectado"

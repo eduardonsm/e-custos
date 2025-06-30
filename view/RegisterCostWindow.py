@@ -257,6 +257,8 @@ class RegisterCostWindow(QWidget):
             costController.add_cost_to_db(nome, valor, categoria, is_direto, is_fixo, is_relevante, is_eliminavel, is_oculto, id)
 
             print(f"Registrando custo: {nome}, Valor: {valor}, Categoria: {categoria}, Direto: {is_direto}, Fixo: {is_fixo}, Relevante: {is_relevante}, Eliminável: {is_eliminavel}, Oculto: {is_oculto}")
+            QMessageBox.information(self, "Sucesso", "Custo cadastrado com sucesso!")
+            self.stacked_widget.setCurrentIndex(29)
 
         except Exception as e:
             QMessageBox.critical(self, "Erro no Banco de Dados", f"Ocorreu um erro ao cadastrar o custo: {e}")
