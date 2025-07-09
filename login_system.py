@@ -124,7 +124,7 @@ class LoginApp(QWidget):
         self.setGeometry(50, 50, 400, 400)
 
     def showEvent(self, event):
-        self.setMinimumSize(1100, 720)  # Tamanho mínimo
+        self.setMinimumSize(1100, 720)
         super().showEvent(event)
 
 # Execução da aplicação
