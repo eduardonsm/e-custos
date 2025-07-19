@@ -1,3 +1,4 @@
+import json
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QRadioButton, QWidget, QVBoxLayout, QLabel, QPushButton, QButtonGroup
 from PySide6.QtWidgets import QLineEdit, QDoubleSpinBox, QMessageBox , QScrollArea, QDateEdit
 
@@ -115,12 +116,50 @@ class RegisterProductWindow(QWidget):
 
         form_layout.addWidget(self.data_fim_input)
         form_layout.addLayout(active_layout)
-        # Árvore de Produto (ComboBox)
-        '''
-        implementar
-        algo como uma lista, um text area que de para colocar quantidade e gerar o json
-        
-        '''
+                # --- Árvore do Produto ---
+        arvore_label = QLabel("Árvore do Produto (Componentes e Quantidades):")
+        arvore_label.setAlignment(Qt.AlignCenter)
+        form_layout.addWidget(arvore_label)
+
+        self.componente_inputs = []  # Guardará pares (nome_input, qtd_input)
+
+        def add_componente_input(nome='', qtd=1):
+            componente_widget = QWidget()
+            componente_layout = QHBoxLayout(componente_widget)
+
+            nome_input = QLineEdit()
+            nome_input.setPlaceholderText("Nome do componente")
+            nome_input.setText(nome)
+            qtd_input = QDoubleSpinBox()
+            qtd_input.setMinimum(0.01)
+            qtd_input.setValue(qtd)
+            qtd_input.setSuffix(" un.")
+            qtd_input.setMaximum(100000)
+
+            remover_btn = QPushButton("Remover")
+            remover_btn.clicked.connect(lambda: remove_componente_input(componente_widget))
+
+            componente_layout.addWidget(nome_input)
+            componente_layout.addWidget(qtd_input)
+            componente_layout.addWidget(remover_btn)
+
+            self.componente_inputs.append((nome_input, qtd_input))
+            form_layout.addWidget(componente_widget)
+
+        def remove_componente_input(widget):
+            for i, (nome_input, qtd_input) in enumerate(self.componente_inputs):
+                if widget.findChild(QLineEdit) == nome_input:
+                    self.componente_inputs.pop(i)
+                    break
+            widget.setParent(None)
+
+        add_btn = QPushButton("Adicionar Componente")
+        add_btn.clicked.connect(lambda: add_componente_input())
+        form_layout.addWidget(add_btn)
+
+        # Adiciona um componente por padrão
+        add_componente_input()
+
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)  # Faz com que o conteúdo se ajuste
@@ -131,8 +170,8 @@ class RegisterProductWindow(QWidget):
 
         main_layout.addWidget(scroll_area)
         # --- Botão de Cadastro ---
-        cadastrar_button = QPushButton("Cadastrar Custo")
-        cadastrar_button.clicked.connect(self.cadastrar_custo)
+        cadastrar_button = QPushButton("Cadastrar Produto")
+        cadastrar_button.clicked.connect(self.cadastrar_produto)
         
         # Centraliza o botão
         button_layout = QHBoxLayout()
@@ -187,20 +226,24 @@ class RegisterProductWindow(QWidget):
         dateStart
         isActive
         endTime
-        price
+        valor
         productTree
         """
-        name = self.nome_custo_input.text()
-        dateProject = self.data_projeto_input.date()
-        dateStart = self.data_inicio_input.date()
+        name = self.nome_produto_input.text()
+        dateProject = self.data_projeto_input.date().toString("yyyy-MM-dd")
+        dateStart = self.data_inicio_input.date().toString("yyyy-MM-dd")
         isActive = self.ativo_radio.isChecked()
-        endTime = self.data_fim_input.date()
-        price = self.preco_input.value()
-        productTree = self.arvore_produto_input.currentText()
+        endTime = self.data_fim_input.date().toString("yyyy-MM-dd")
+        valor = self.valor_produto_input.value()
+        productTree = json.dumps([
+            {"nome": nome_input.text(), "quantidade": qtd_input.value()}
+            for nome_input, qtd_input in self.componente_inputs
+            if nome_input.text().strip() != ''
+        ])
 
         
         # Validação simples
-        if not name or price <= 0:
+        if not name or valor <= 0:
             QMessageBox.warning(self, "Erro de Entrada", "Por favor, preencha o nome do produto e um valor válido.")
             return
 
@@ -208,9 +251,9 @@ class RegisterProductWindow(QWidget):
             session = Session()
             id = session.user_id
             productController = ProductController()
-            productController.add_product(name, dateProject, dateStart, isActive, endTime, price, productTree)
+            productController.add_product(name, dateProject, dateStart, isActive, endTime, valor, productTree, id)
 
-            print(f"Registrando produto: {name}, Data do Projeto: {dateProject}, Data de Início: {dateStart}, Ativo: {isActive}, Data de Fim: {endTime}, Preço: {price}, ProductTree: {productTree}")
+            print(f"Registrando produto: {name}, Data do Projeto: {dateProject}, Data de Início: {dateStart}, Ativo: {isActive}, Data de Fim: {endTime}, Preço: {valor}, ProductTree: {productTree}")
             QMessageBox.information(self, "Sucesso", "Produto cadastrado com sucesso!")
             self.stacked_widget.setCurrentIndex(29)
 
