@@ -33,6 +33,8 @@ from view.guiasmart.Pergunta27Window import Pergunta27Window
 from view.guiasmart.Resultado import Resultado
 from view.HomeWindow import HomeWindow
 from view.RegisterCostWindow import RegisterCostWindow
+from view.product.RegisterProductWindow import RegisterProductWindow
+from view.product.ListProductWindow import ProductListWindow
 
 def load_stylesheet(app, file_name="style.qss"):
         try:
@@ -82,6 +84,8 @@ class LoginApp(QWidget):
         self.resultado_window = Resultado(self.stacked_widget)
         self.home_window = HomeWindow(self.stacked_widget)
         self.register_cost_window = RegisterCostWindow(self.stacked_widget)
+        self.register_product_window = RegisterProductWindow(self.stacked_widget)
+        self.product_list_window = ProductListWindow(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
@@ -114,6 +118,8 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.resultado_window)
         self.stacked_widget.addWidget(self.home_window)
         self.stacked_widget.addWidget(self.register_cost_window)
+        self.stacked_widget.addWidget(self.register_product_window)
+        self.stacked_widget.addWidget(self.product_list_window)
 
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)

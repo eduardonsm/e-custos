@@ -4,14 +4,11 @@ from PySide6.QtGui import QIcon, QPixmap
 from components.CustomRadioButton import CustomRadioButton
 from model.Session import Session # Assumindo que Session está em model/Session.py
 from PySide6.QtCore import Qt
-from view.product.ListProductWindow import ProductListWindow
 
 class HomeWindow(QWidget):
     def __init__(self, stacked_widget):
         super().__init__()
         self.stacked_widget = stacked_widget
-        self.product_list_window = ProductListWindow(stacked_widget)
-        self.stacked_widget.addWidget(self.product_list_window)
         main_layout = QVBoxLayout() 
 
         # --- Cabeçalho ---
@@ -49,15 +46,18 @@ class HomeWindow(QWidget):
         cadastrar.setObjectName("cadastrar")
         cadastrar.clicked.connect(self.cadastrar_custo)
         content_layout.addWidget(cadastrar)
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch(1)
         
-        # --- Conteúdo Principal ---
-        content_layout = QVBoxLayout()
-        cadastrar = QPushButton("Cadastrar produto")
-        cadastrar.setObjectName("cadastrar")
-        cadastrar.clicked.connect(self.cadastrar_produto)
-        content_layout.addWidget(cadastrar)
+        # --- cadastrar Produtos ---
+        cadastrar_produto = QPushButton("Cadastrar produto")
+        cadastrar_produto.setObjectName("cadastrar_produto")
+        cadastrar_produto.clicked.connect(self.cadastrar_produto)
+        content_layout.addWidget(cadastrar_produto)
+        # --- Listar Produtos ---
+        listar_produto = QPushButton("Listar produto")
+        listar_produto.setObjectName("listar_produto")
+        listar_produto.clicked.connect(self.listar_produtos)
+        content_layout.addWidget(listar_produto)
+
         main_layout.addLayout(content_layout)
         main_layout.addStretch(1)
 
@@ -81,3 +81,9 @@ class HomeWindow(QWidget):
         home_screen = self.stacked_widget.widget(31)
         home_screen.update_user_info()
         self.stacked_widget.setCurrentIndex(31)
+    def listar_produtos(self):
+        listProduct = self.stacked_widget.widget(32)
+        listProduct.update_user_info()
+        listProduct.load_products()
+        self.stacked_widget.setCurrentIndex(32)
+        
