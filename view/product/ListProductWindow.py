@@ -33,6 +33,10 @@ class ProductListWindow(QWidget):
         sair_button = QPushButton("Sair")
         sair_button.setObjectName("sair")
         sair_button.clicked.connect(self.logout_and_switch_to_welcome)
+        voltar_button = QPushButton("Voltar")
+        voltar_button.setObjectName("Voltar")
+        voltar_button.clicked.connect(self.back_to_home)
+        header_layout.addWidget(voltar_button)
         header_layout.addWidget(sair_button)
 
         self.perfil_label = QLabel()
@@ -176,5 +180,5 @@ class ProductListWindow(QWidget):
         Session.user_id = None
         Session.username = None
         self.stacked_widget.setCurrentIndex(0)
-    def switch_to_welcome(self):
-        self.stacked_widget.setCurrentIndex(2)
+    def back_to_home(self):
+        self.stacked_widget.setCurrentIndex(29)
