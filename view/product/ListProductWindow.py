@@ -1,11 +1,12 @@
-import json
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, 
-                               QLabel, QPushButton, QHBoxLayout, QFrame, QScrollArea)
+                               QLabel, QPushButton, QHBoxLayout, QFrame, QScrollArea, QMessageBox,QDialog)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 
 from model.Session import Session
 from model.ProductRepository import ProductRepository
+from viewModel.ProductController import ProductController
+from view.product.UpdateProjectDialog import UpdateProductDialog
 
 class ProductListWindow(QWidget):
     def __init__(self, stacked_widget):
@@ -96,9 +97,9 @@ class ProductListWindow(QWidget):
         self.title.setText(f"Produtos Cadastrados ({len(products)})")
 
         self.table.setRowCount(len(products))
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(9)
         self.table.setHorizontalHeaderLabels([
-            "Nome", "Data Projeto", "Data Início", "Ativo", "Data Fim", "Preço", "Árvore do Produto"
+            "Nome", "Data Projeto", "Data Início", "Ativo", "Data Fim", "Preço", "Árvore do Produto", "Editar", "Excluir"
         ])
 
         for row_idx, product in enumerate(products):
@@ -109,19 +110,71 @@ class ProductListWindow(QWidget):
             self.table.setItem(row_idx, 4, QTableWidgetItem(str(product.endTime) if product.endTime else "N/A"))
             self.table.setItem(row_idx, 5, QTableWidgetItem(f"R$ {product.price:.2f}"))
             self.table.setItem(row_idx, 6, QTableWidgetItem(product.productTree))
+            # Botão de Editar
+            update_button = QPushButton("Editar")
+            update_button.clicked.connect(lambda checked, pid=product.id: self.updateProduct(pid))
+            self.table.setCellWidget(row_idx, 7, update_button)
 
+            # Botão de Excluir
+            delete_button = QPushButton("Excluir")
+            delete_button.clicked.connect(lambda checked, pid=product.id: self.deleteProduct(pid))
+            self.table.setCellWidget(row_idx, 8, delete_button)
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
+
+    # --- utils ---
+    def updateProduct(self, product_id):
+        user_id = Session().user_id
+        if not user_id:
+            return
+        confirm_reply = QMessageBox.question(self, 'Confirmar Edição',
+                                         f"Tem certeza que deseja editar o produto {product_id}?",
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if confirm_reply == QMessageBox.Yes:
+            pController = ProductController()
+            try:
+                productToUpdate = pController.get_product_by_id(product_id, user_id=user_id)
+
+                dialog = UpdateProductDialog(productToUpdate, self)
+                if dialog.exec() == QDialog.Accepted:
+                    updated_product = dialog.get_updated_data()
+                    if updated_product:
+                        pController.update_product(product_id=product_id, user_id=user_id, name=updated_product.name,
+                                                   dateProject=updated_product.dateProject,
+                                                   dateStart=updated_product.dateStart,
+                                                   isActive=updated_product.isActive,
+                                                   endTime=updated_product.endTime,
+                                                   price=updated_product.price,
+                                                   productTree=updated_product.productTree)
+                        QMessageBox.information(self, "Sucesso", "Produto atualizado com sucesso.")
+                        self.load_products()
+            except Exception as e:
+                QMessageBox.critical(self, "Erro", f"Não foi possível atualizar o produto: {e}")
+    def deleteProduct(self, product_id):
+        userId = Session().user_id
+        if not userId:
+            return
+
+        confirm_reply = QMessageBox.question(self, 'Confirmar Exclusão', 
+                                         f"Tem certeza que deseja excluir o produto {product_id}?",
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if confirm_reply == QMessageBox.Yes:
+            pController = ProductController()
+            try:
+                pController.delete_product(product_id, user_id=userId)
+                QMessageBox.information(self, "Sucesso", "Produto excluído com sucesso.")
+                self.load_products() 
+            except Exception as e:
+                QMessageBox.critical(self, "Erro", f"Não foi possível excluir o produto: {e}")
 
     def update_user_info(self):
         session = Session()
         username_display = session.username if session.username else "Não Conectado"
         self.perfil_label.setText(f"Conectado: {username_display}")
-
     def logout_and_switch_to_welcome(self):
         Session.user_id = None
         Session.username = None
         self.stacked_widget.setCurrentIndex(0)
-    
     def switch_to_welcome(self):
         self.stacked_widget.setCurrentIndex(2)

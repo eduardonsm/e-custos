@@ -55,7 +55,15 @@ class ProductRepository:
         rows = cursor.fetchall()
         products = []
         for row in rows:
-            product = Product(row[1], row[2], row[3], bool(row[4]), row[5], row[6], row[7])
+            product = Product(name=row[1], 
+            dateProject=row[2], 
+            dateStart=row[3], 
+            isActive=bool(row[4]), 
+            endTime=row[5], 
+            price=row[6], 
+            productTree=row[7],
+            id=row[0])
+
             products.append(product)
         if self.conn is None:
             conn.close()
@@ -68,7 +76,14 @@ class ProductRepository:
         row = cursor.fetchone()
         
         if row:
-            return Product(row[1], row[2], row[3], bool(row[4]), row[5], row[6], row[7])
+            return Product(name=row[1], 
+            dateProject=row[2], 
+            dateStart=row[3], 
+            isActive=bool(row[4]), 
+            endTime=row[5], 
+            price=row[6], 
+            productTree=row[7],
+            id=row[0])
         if self.conn is None:
             conn.close()
         return None
