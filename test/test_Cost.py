@@ -1,7 +1,6 @@
 import sys
 import os
 import pytest
-import json
 import sqlite3
 
 # Garante que o caminho está correto
@@ -35,20 +34,35 @@ def sample_cost():
 def test_add_cost(repo, sample_cost):
     assert repo.add_cost(sample_cost, user_id=1)
 
-# def test_get_costs_by_user(repo, sample_cost):
-#     repo.add_cost(sample_cost, user_id=1)
-#     costs = repo.get_costs_by_user(1)
-#     assert len(costs) == 1
-#     assert costs[0].description == "Custo Teste"
+def test_get_costs_by_user(repo, sample_cost):
+    repo.add_cost(sample_cost, user_id=1)
+    costs = repo.get_costs_by_user(1)
+    assert len(costs) == 1
+    assert costs[0].description == "Custo Teste"
 
-# def test_get_cost_by_id(repo, sample_cost):
-#     repo.add_cost(sample_cost, user_id=1)
-#     cost = repo.get_cost_by_id(1, 1)
-#     assert cost is not None
-#     assert cost.description == "Custo Teste"
+def test_get_cost_by_code(repo, sample_cost):
+    repo.add_cost(sample_cost, user_id=1)
+    cost = repo.get_cost_by_code(1, 1)
+    assert cost is not None
+    assert cost.description == "Custo Teste"
 
-# def test_update_cost(repo, sample_cost):
-    
+def test_update_cost(repo, sample_cost):
+    repo.add_cost(sample_cost, 1)
+    updated = repo.update_cost(code=1,
+        product=1,
+        description="Custo Atualizado",
+        quantity=10,
+        unitPrice=5.0,
+        is_fixo=True,
+        is_direto=False,
+        is_relevante=True,
+        is_eliminavel=False,
+        is_oculto=False,
+        user_id = 1
+    )
+    assert updated
+    cost = repo.get_cost_by_code(1, 1)
+    assert cost.description == "Custo Atualizado"
 
 # def test_delete_cost(repo, sample_cost):
     

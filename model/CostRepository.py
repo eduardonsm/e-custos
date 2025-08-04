@@ -49,3 +49,51 @@ class CostRepository:
         if self.conn is None:
             conn.close()
         return True
+    
+    def get_costs_by_user(self, user_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM costs WHERE user_id = ?", (user_id,))
+        rows = cursor.fetchall()
+        costs = []
+        for row in rows:
+            cost = Cost(
+                code=row[0], product=row[1], description=row[2],
+                quantity=row[3], unitPrice=row[4], is_fixo=row[5],
+                is_direto=row[5], is_relevante=row[6], is_eliminavel=row[7],
+                is_oculto=row[8]
+            )
+            costs.append(cost)
+        if self.conn is None:
+            conn.close()
+        return costs
+    def get_cost_by_code(self,code, user_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM costs WHERE code = ? AND user_id = ?", (code, user_id))
+        row = cursor.fetchone()
+        
+        if row:
+            return Cost(
+                code=row[0], product=row[1], description=row[2],
+                quantity=row[3], unitPrice=row[4], is_fixo=row[5],
+                is_direto=row[5], is_relevante=row[6], is_eliminavel=row[7],
+                is_oculto=row[8]
+            )
+        if self.conn is None:
+            conn.close()
+        return None
+    
+    def update_cost(self,code, product, description, quantity, unitPrice, is_fixo, is_direto, is_relevante, is_eliminavel, is_oculto, user_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE costs
+            SET product = ?, description = ?, quantity = ?, unitPrice = ?, is_fixo = ?, is_direto = ?, is_relevante = ?, is_eliminavel = ?, is_oculto = ?
+            WHERE code = ? AND user_id = ?
+        """, (product, description, quantity, unitPrice, is_fixo, is_direto, is_relevante, is_eliminavel, is_oculto, code, user_id))
+        updated = cursor.rowcount
+        conn.commit()
+        if self.conn is None:
+            conn.close()
+        return updated > 0
