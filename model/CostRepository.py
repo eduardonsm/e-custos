@@ -97,3 +97,12 @@ class CostRepository:
         if self.conn is None:
             conn.close()
         return updated > 0
+    def delete_cost(self, code, user_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM costs WHERE code = ? AND user_id = ?", (code, user_id))
+        deleted = cursor.rowcount
+        conn.commit()
+        if self.conn is None:
+            conn.close()
+        return deleted > 0
