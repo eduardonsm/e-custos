@@ -64,5 +64,9 @@ def test_update_cost(repo, sample_cost):
     cost = repo.get_cost_by_code(1, 1)
     assert cost.description == "Custo Atualizado"
 
-# def test_delete_cost(repo, sample_cost):
+def test_delete_cost(repo, sample_cost):
+    repo.add_cost(sample_cost, 1)
+    deleted = repo.delete_cost(1, 1)
+    assert deleted
+    assert repo.get_cost_by_code(1, 1) is None
     
