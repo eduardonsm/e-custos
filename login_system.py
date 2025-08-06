@@ -1,5 +1,7 @@
 import sys
 import model.UserRepository as userRepository
+import model.CostRepository as costRepository
+import model.ProductRepository as productRepository
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
 from PySide6.QtGui import QIcon
 from view.LoginWindow import LoginWindow
@@ -32,10 +34,10 @@ from view.guiasmart.Pergunta26Window import Pergunta26Window
 from view.guiasmart.Pergunta27Window import Pergunta27Window
 from view.guiasmart.Resultado import Resultado
 from view.HomeWindow import HomeWindow
-from view.RegisterCostWindow import RegisterCostWindow
+from view.cost.RegisterCostWindow import RegisterCostWindow
 from view.product.RegisterProductWindow import RegisterProductWindow
 from view.product.ListProductWindow import ProductListWindow
-
+from view.cost.ListCostWindow import ListCostWindow
 def load_stylesheet(app, file_name="style.qss"):
         try:
             with open(file_name, "r") as file:
@@ -86,6 +88,7 @@ class LoginApp(QWidget):
         self.register_cost_window = RegisterCostWindow(self.stacked_widget)
         self.register_product_window = RegisterProductWindow(self.stacked_widget)
         self.product_list_window = ProductListWindow(self.stacked_widget)
+        self.list_cost_window = ListCostWindow(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
@@ -120,6 +123,7 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.register_cost_window)
         self.stacked_widget.addWidget(self.register_product_window)
         self.stacked_widget.addWidget(self.product_list_window)
+        self.stacked_widget.addWidget(self.list_cost_window)
 
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
@@ -136,7 +140,10 @@ class LoginApp(QWidget):
 # Execução da aplicação
 if __name__ == "__main__":
     userRepository.UserRepository.create_dbUsers()
-    userRepository.UserRepository.create_dbCosts()
+    cost_repo = costRepository.CostRepository()
+    cost_repo.create_dbCosts()
+    product_repo = productRepository.ProductRepository()
+    product_repo.create_dbProducts()
     app = QApplication(sys.argv)
     load_stylesheet(app)
     window = LoginApp()

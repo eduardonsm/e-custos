@@ -74,8 +74,9 @@ class HomeWindow(QWidget):
         username_display = session.username if session.username is not None else "Não Conectado"
         self.perfil.setText(f"Conectado: {username_display}")
     def cadastrar_custo(self):
-        home_screen = self.stacked_widget.widget(30)
-        home_screen.update_user_info()
+        costRegister = self.stacked_widget.widget(30)
+        costRegister.update_user_info()
+        costRegister.refresh_data()
         self.stacked_widget.setCurrentIndex(30)
     def cadastrar_produto(self):
         home_screen = self.stacked_widget.widget(31)
