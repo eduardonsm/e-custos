@@ -2,6 +2,7 @@ import sys
 import model.UserRepository as userRepository
 import model.CostRepository as costRepository
 import model.ProductRepository as productRepository
+import model.MaterialDiretoRepository as materialRepository
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
 from PySide6.QtGui import QIcon
 from view.LoginWindow import LoginWindow
@@ -36,7 +37,7 @@ from view.guiasmart.Resultado import Resultado
 from view.HomeWindow import HomeWindow
 from view.cost.RegisterCostWindow import RegisterCostWindow
 from view.product.RegisterProductWindow import RegisterProductWindow
-from view.product.ListProductWindow import ProductListWindow
+from view.RegisterMaterialDiretoWindow import RegisterMaterialDiretoWindow
 from view.cost.ListCostWindow import ListCostWindow
 def load_stylesheet(app, file_name="style.qss"):
         try:
@@ -87,7 +88,7 @@ class LoginApp(QWidget):
         self.home_window = HomeWindow(self.stacked_widget)
         self.register_cost_window = RegisterCostWindow(self.stacked_widget)
         self.register_product_window = RegisterProductWindow(self.stacked_widget)
-        self.product_list_window = ProductListWindow(self.stacked_widget)
+        self.register_material_direto_window = RegisterMaterialDiretoWindow(self.stacked_widget)
         self.list_cost_window = ListCostWindow(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
@@ -122,7 +123,7 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.home_window)
         self.stacked_widget.addWidget(self.register_cost_window)
         self.stacked_widget.addWidget(self.register_product_window)
-        self.stacked_widget.addWidget(self.product_list_window)
+        self.stacked_widget.addWidget(self.register_material_direto_window)
         self.stacked_widget.addWidget(self.list_cost_window)
 
         layout = QVBoxLayout()
@@ -144,6 +145,8 @@ if __name__ == "__main__":
     cost_repo.create_dbCosts()
     product_repo = productRepository.ProductRepository()
     product_repo.create_dbProducts()
+    material_repo = materialRepository.MaterialDiretoRepository()
+    material_repo.create_dbMaterials()
     app = QApplication(sys.argv)
     load_stylesheet(app)
     window = LoginApp()
