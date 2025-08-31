@@ -94,7 +94,7 @@ class HomeWindow(QWidget):
     def visualizar_lista(self): print("Visualizar lista chamado")
     def materiais_diretos(self): self.switch_to_screen(31)
     def mod(self): self.switch_to_screen(32)
-    def centros_custo(self): self.switch_to_screen(33)
+    def centros_custo(self): self.switch_to_screen(34)
     def recursos_produtivos(self): self.switch_to_screen(34)
     def cif(self): self.switch_to_screen(35)
     def custo_ocultos(self): self.switch_to_screen(36)
