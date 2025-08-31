@@ -4,6 +4,7 @@ import model.CostRepository as costRepository
 import model.ProductRepository as productRepository
 import model.MaterialDiretoRepository as materialRepository
 import model.CentroCustoRepository as centrocustoRepository
+import model.MaoDeObraDiretaRepository as modRepository
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QStackedWidget
 from PySide6.QtGui import QIcon
 from view.LoginWindow import LoginWindow
@@ -41,6 +42,8 @@ from view.product.RegisterProductWindow import RegisterProductWindow
 from view.RegisterMaterialDiretoWindow import RegisterMaterialDiretoWindow
 from view.cost.ListCostWindow import ListCostWindow
 from view.centrocusto.RegisterCentroCusto import RegisterCentroCustoWindow
+from view.mod.RegisterMaoDeObraDireta import RegisterMaoDeObraDiretaWindow
+
 def load_stylesheet(app, file_name="style.qss"):
         try:
             with open(file_name, "r") as file:
@@ -93,6 +96,7 @@ class LoginApp(QWidget):
         self.register_material_direto_window = RegisterMaterialDiretoWindow(self.stacked_widget)
         self.list_cost_window = ListCostWindow(self.stacked_widget)
         self.centro_custo_register = RegisterCentroCustoWindow(self.stacked_widget)
+        self.mod_register = RegisterMaoDeObraDiretaWindow(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
@@ -129,6 +133,7 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.register_material_direto_window)
         self.stacked_widget.addWidget(self.list_cost_window)
         self.stacked_widget.addWidget(self.centro_custo_register)
+        self.stacked_widget.addWidget(self.mod_register)
 
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
@@ -153,6 +158,8 @@ if __name__ == "__main__":
     material_repo.create_dbMaterials()
     centrocusto_repo = centrocustoRepository.CentroCustoRepository()
     centrocusto_repo.create_dbCentrosCusto()
+    mod_repo = modRepository.MaoDeObraDiretaRepository()
+    mod_repo.create_dbMOD()
     app = QApplication(sys.argv)
     load_stylesheet(app)
     window = LoginApp()

@@ -93,7 +93,10 @@ class HomeWindow(QWidget):
     def cadastrar_produtos(self): self.switch_to_screen(31)
     def visualizar_lista(self): print("Visualizar lista chamado")
     def materiais_diretos(self): self.switch_to_screen(31)
-    def mod(self): self.switch_to_screen(32)
+    def mod(self): 
+        screen = self.stacked_widget.widget(35)
+        screen.load_view_data()
+        self.switch_to_screen(35)
     def centros_custo(self): self.switch_to_screen(34)
     def recursos_produtivos(self): self.switch_to_screen(34)
     def cif(self): self.switch_to_screen(35)

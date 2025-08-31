@@ -156,7 +156,6 @@ class RegisterCentroCustoWindow(QWidget):
                 user_id=Session().user_id
             )
 
-            # Salvar no banco de dados
             self.centro_custo_repo.add_centro_custo(centro)
             
             QMessageBox.information(self, "Sucesso", "Centro de custo cadastrado com sucesso!")
