@@ -30,7 +30,7 @@ class RegisterCentroCustoWindow(QWidget):
         header_layout.addStretch(1)
 
         home_button = QPushButton("Início")
-        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         header_layout.addWidget(home_button)
 
         sair_button = QPushButton("Sair")
@@ -115,7 +115,7 @@ class RegisterCentroCustoWindow(QWidget):
         
         btn_cancelar = QPushButton("Cancelar")
         btn_cancelar.setStyleSheet("background-color: #f44336; color: white;")
-        btn_cancelar.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        btn_cancelar.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         
         btn_layout.addStretch()
         btn_layout.addWidget(btn_cancelar)

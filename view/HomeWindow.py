@@ -52,7 +52,8 @@ class HomeWindow(QWidget):
             ("Custo ocultos", self.custo_ocultos),
             ("Processos", self.processos),
             ("Bases de rateio", self.bases_rateio),
-            ("Visualizar cadastro", self.visualizar_cadastro)
+            ("Itens de Custo", self.itens_custo),
+            ("Listar Itens de custo", self.list_itens_custo)
         ]
         
         for i, (text, callback) in enumerate(buttons):
@@ -72,8 +73,7 @@ class HomeWindow(QWidget):
             ("Cadastros", self.menu_cadastros),
             ("Operações", self.menu_operacoes),
             ("Análises", self.menu_analises),
-            ("Métodos", self.menu_metodos),
-            ("Princípios", self.menu_principios),
+            ("Custeio", self.menu_custeio),
             ("Desperdícios", self.menu_desperdicios),
             ("Configurações", self.menu_configuracoes),
             ("Relatórios", self.menu_relatorios)
@@ -89,28 +89,32 @@ class HomeWindow(QWidget):
     # --- Todos os métodos conectados ---
     
     # Métodos da grid principal
-    def bom_cadastrar(self):  self.switch_to_screen(32)
     def cadastrar_produtos(self): self.switch_to_screen(31)
+    def bom_cadastrar(self):  self.switch_to_screen(32)
     def visualizar_lista(self): print("Visualizar lista chamado")
-    def materiais_diretos(self): self.switch_to_screen(31)
+    def materiais_diretos(self): self.switch_to_screen(32)
     def mod(self): 
         screen = self.stacked_widget.widget(35)
         screen.load_view_data()
         self.switch_to_screen(35)
     def centros_custo(self): self.switch_to_screen(34)
+    def itens_custo(self): self.switch_to_screen(36)
+    def list_itens_custo(self):
+        screen = self.stacked_widget.widget(37)
+        screen.load_data()
+        self.switch_to_screen(37)
+    
     def recursos_produtivos(self): self.switch_to_screen(34)
     def cif(self): self.switch_to_screen(35)
     def custo_ocultos(self): self.switch_to_screen(36)
     def processos(self): self.switch_to_screen(37)
     def bases_rateio(self): self.switch_to_screen(38)
-    def visualizar_cadastro(self): self.switch_to_screen(39)
     
     # Métodos do menu inferior
     def menu_cadastros(self): self.switch_to_screen(40)
     def menu_operacoes(self): self.switch_to_screen(41)
     def menu_analises(self): self.switch_to_screen(42)
-    def menu_metodos(self): self.switch_to_screen(43)
-    def menu_principios(self): self.switch_to_screen(44)
+    def menu_custeio(self): self.switch_to_screen(43)
     def menu_desperdicios(self): self.switch_to_screen(45)
     def menu_configuracoes(self): self.switch_to_screen(46)
     def menu_relatorios(self): self.switch_to_screen(47)

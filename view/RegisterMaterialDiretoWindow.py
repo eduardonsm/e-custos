@@ -29,7 +29,7 @@ class RegisterMaterialDiretoWindow(QWidget):
         header_layout.addStretch(1)
 
         home_button = QPushButton("Início")
-        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         header_layout.addWidget(home_button)
 
         sair_button = QPushButton("Sair")
@@ -135,7 +135,7 @@ class RegisterMaterialDiretoWindow(QWidget):
         
         btn_cancelar = QPushButton("Cancelar")
         btn_cancelar.setStyleSheet("background-color: #f44336; color: white;")
-        btn_cancelar.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        btn_cancelar.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         
         btn_layout.addStretch()
         btn_layout.addWidget(btn_cancelar)
@@ -189,7 +189,7 @@ class RegisterMaterialDiretoWindow(QWidget):
             
             QMessageBox.information(self, "Sucesso", "Material cadastrado com sucesso!")
             self.limpar_formulario()
-            self.stacked_widget.setCurrentIndex(1)  # Volta para home
+            self.stacked_widget.setCurrentIndex(29)  # Volta para home
             
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao cadastrar material:\n{str(e)}")
