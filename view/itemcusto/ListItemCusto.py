@@ -27,7 +27,7 @@ class ListItemCustoWindow(QWidget):
         header_layout.addWidget(icon)
         header_layout.addStretch(1)
         home_button = QPushButton("Início")
-        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         header_layout.addWidget(home_button)
         sair_button = QPushButton("Sair")
         sair_button.clicked.connect(self.logout_and_switch_to_welcome)
@@ -194,7 +194,6 @@ class ListItemCustoWindow(QWidget):
                 QMessageBox.critical(self, "Erro", f"Ocorreu um erro ao excluir o item:\n{e}")
 
     def logout_and_switch_to_welcome(self):
-        Session().clear_session()
         self.stacked_widget.setCurrentIndex(0)
 
     def update_user_info(self):

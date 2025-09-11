@@ -114,7 +114,10 @@ class HomeWindow(QWidget):
     def menu_cadastros(self): self.switch_to_screen(40)
     def menu_operacoes(self): self.switch_to_screen(41)
     def menu_analises(self): self.switch_to_screen(42)
-    def menu_custeio(self): self.switch_to_screen(43)
+    def menu_custeio(self): 
+        screen = self.stacked_widget.widget(38)
+        screen.load_data()
+        self.switch_to_screen(38)
     def menu_desperdicios(self): self.switch_to_screen(45)
     def menu_configuracoes(self): self.switch_to_screen(46)
     def menu_relatorios(self): self.switch_to_screen(47)

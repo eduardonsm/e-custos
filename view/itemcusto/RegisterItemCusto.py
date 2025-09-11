@@ -27,7 +27,7 @@ class RegisterItemCustoWindow(QWidget):
         header_layout.addWidget(icon)
         header_layout.addStretch(1)
         home_button = QPushButton("Início")
-        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        home_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         header_layout.addWidget(home_button)
         sair_button = QPushButton("Sair")
         sair_button.clicked.connect(self.logout_and_switch_to_welcome)
@@ -120,7 +120,7 @@ class RegisterItemCustoWindow(QWidget):
         btn_salvar.clicked.connect(self.salvar_item_custo)
         btn_cancelar = QPushButton("Cancelar")
         btn_cancelar.setStyleSheet("background-color: #f44336; color: white;")
-        btn_cancelar.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        btn_cancelar.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(29))
         btn_layout.addStretch()
         btn_layout.addWidget(btn_cancelar)
         btn_layout.addWidget(btn_salvar)
@@ -169,7 +169,7 @@ class RegisterItemCustoWindow(QWidget):
             self.item_custo_repo.add_item_custo(item)
             QMessageBox.information(self, "Sucesso", "Item de custo cadastrado com sucesso!")
             self.limpar_formulario()
-            self.stacked_widget.setCurrentIndex(1)
+            self.stacked_widget.setCurrentIndex(29)
             
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao cadastrar o item de custo:\n{str(e)}")
