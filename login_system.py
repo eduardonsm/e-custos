@@ -47,6 +47,7 @@ from view.mod.RegisterMaoDeObraDireta import RegisterMaoDeObraDiretaWindow
 from view.itemcusto.RegisterItemCusto import RegisterItemCustoWindow
 from view.itemcusto.ListItemCusto import ListItemCustoWindow
 from view.custeio.CusteioProduto import CusteioProdutoWindow
+from view.relatorio.PersonalizaRelatorio import PersonalizaRelatorioWindow
 
 def load_stylesheet(app, file_name="style.qss"):
         try:
@@ -104,6 +105,7 @@ class LoginApp(QWidget):
         self.icusto_register = RegisterItemCustoWindow(self.stacked_widget)
         self.icusto_list = ListItemCustoWindow(self.stacked_widget, self.icusto_register)
         self.custeio_produto = CusteioProdutoWindow(self.stacked_widget)
+        self.personaliza_relatorio = PersonalizaRelatorioWindow(self.stacked_widget)
 
         self.stacked_widget.addWidget(self.login_window)
         self.stacked_widget.addWidget(self.register_window)
@@ -144,6 +146,7 @@ class LoginApp(QWidget):
         self.stacked_widget.addWidget(self.icusto_register)
         self.stacked_widget.addWidget(self.icusto_list)
         self.stacked_widget.addWidget(self.custeio_produto)
+        self.stacked_widget.addWidget(self.personaliza_relatorio)
 
         layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
