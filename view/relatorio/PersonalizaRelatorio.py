@@ -2,8 +2,9 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
                                QLabel, QPushButton, QGroupBox, QCheckBox, QRadioButton, 
                                QButtonGroup, QDateEdit, QScrollArea, QComboBox, QTableView,
                                QFormLayout, QMessageBox, QSpinBox)
-from PySide6.QtGui import QFont, QStandardItem, QStandardItemModel
+from PySide6.QtGui import QFont, QStandardItem, QStandardItemModel, QPainter
 from PySide6.QtCore import Qt, QDate
+from PySide6.QtCharts import QChartView, QChart, QPieSeries, QBarSeries, QBarSet, QBarCategoryAxis
 from model.Session import Session
 from model.ItemCustoRepository import ItemCustoRepository
 
@@ -62,6 +63,10 @@ class PersonalizaRelatorioWindow(QWidget):
         self.table_report.setModel(self.model)
         self.table_report.setEditTriggers(QTableView.NoEditTriggers)
         main_layout.addWidget(self.table_report)
+        
+        self.chart_view = QChartView()
+        self.chart_view.setRenderHint(QPainter.Antialiasing)
+        main_layout.addWidget(self.chart_view)
 
     # --- Métodos de Criação dos Grupos da UI ---
 
@@ -198,7 +203,8 @@ class PersonalizaRelatorioWindow(QWidget):
 
     def _toggle_all_products(self, state):
         for checkbox in self.product_checkboxes.values():
-            checkbox.setChecked(bool(state))
+            if checkbox.text().lower() != "nenhum":
+                checkbox.setChecked(bool(state))
     
     def _toggle_all_categories(self, state):
         for checkbox in self.category_checkboxes.values():
@@ -218,9 +224,9 @@ class PersonalizaRelatorioWindow(QWidget):
             produtos = self.item_custo_repo.get_distinct_produto_ids(user_id)
             
             # Adiciona o checkbox "Todos"
-            chk_todos = QCheckBox("Todos")
-            chk_todos.stateChanged.connect(self._toggle_all_products)
-            self.product_selection_layout.addWidget(chk_todos)
+            self.chk_todos = QCheckBox("Todos")
+            self.chk_todos.stateChanged.connect(self._toggle_all_products)
+            self.product_selection_layout.addWidget(self.chk_todos)
 
             # Adiciona os produtos do banco
             for pid in produtos:
@@ -253,7 +259,14 @@ class PersonalizaRelatorioWindow(QWidget):
         """Orquestra a coleta de dados, cálculos e exibição dos relatórios."""
         user_id = Session().user_id
         if not user_id: return
+        
+        self.model.clear()
+        if self.chart_view.chart():
+            self.chart_view.setChart(QChart()) # Limpa o gráfico anterior
+
+        # --- Coleta de Filtros ---
         volumes = {pid: spinbox.value() for pid, spinbox in self.volume_inputs.items()}
+        selected_products = [pid for pid, chk in self.product_checkboxes.items() if chk.isChecked()]
         
         # Validação: verifica se algum produto foi selecionado e teve seu volume definido
         if not volumes:
@@ -276,14 +289,32 @@ class PersonalizaRelatorioWindow(QWidget):
                         product_costs[pid]['MD'] += item.valor_total
                     elif item.categoria == 'MOD':
                         product_costs[pid]['MOD'] += item.valor_total
+            # --- Geração das Tabelas ---
+            report_data = []
             if self.chk_viz_tabelas.isChecked():
                 if self.radio_variavel.isChecked():
-                    self.gerar_relatorio_variavel(product_costs, volumes)
+                    report_data = self.gerar_relatorio_variavel(product_costs, volumes)
                 else:
-                    self.gerar_relatorio_absorcao(product_costs, volumes, itens_overhead)
+                    report_data = self.gerar_relatorio_absorcao(product_costs, volumes, itens_overhead)
+
+            # --- Geração dos Gráficos ---
+            if self.chk_viz_graficos.isChecked():
+                # Conta quantos produtos REAIS foram selecionados (ignora o "Nenhum")
+                num_selected_products = len([p for p in selected_products if p.lower() != 'nenhum'])
+
+                if num_selected_products == 0:
+                    # Se nenhum produto foi marcado, mostra um gráfico de pizza GERAL da empresa
+                    self._gerar_grafico_pizza_geral(all_items)
+                elif num_selected_products == 1:
+                    # Se apenas 1 produto foi marcado, mostra um gráfico de pizza da composição de custo dele
+                    self._gerar_grafico_pizza_produto(report_data)
+                else: # 2 ou mais produtos
+                    # Se 2 ou mais produtos foram marcados, mostra um gráfico de barras comparativo
+                    self._gerar_grafico_barras(report_data)
 
         except Exception as e:
             QMessageBox.critical(self, "Erro no Cálculo", f"Ocorreu um erro ao gerar o relatório: {e}")
+
     def gerar_relatorio_variavel(self, product_costs, volumes):
         self.model.clear()
         headers = [

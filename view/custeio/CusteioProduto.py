@@ -85,14 +85,11 @@ class CusteioProdutoWindow(QWidget):
         main_layout.addWidget(group_principio)
         self.radio_variavel.setChecked(True)
 
-
-        # --- Botão de Ação ---
         btn_gerar = QPushButton("Gerar Relatório")
         btn_gerar.setStyleSheet("background-color: #28a745; color: white; font-size: 14px; padding: 5px;")
         btn_gerar.clicked.connect(self.gerar_relatorio)
         main_layout.addWidget(btn_gerar)
         
-        # --- Tabela de Resultados ---
         self.table_report = QTableView()
         self.model = QStandardItemModel()
         self.table_report.setModel(self.model)
@@ -107,7 +104,6 @@ class CusteioProdutoWindow(QWidget):
 
     def populate_volumes_form(self):
         """Cria dinamicamente os campos de input para o volume de cada produto."""
-        # Limpa widgets antigos
         while self.form_layout_volumes.count():
             item = self.form_layout_volumes.takeAt(0)
             widget = item.widget()
@@ -120,7 +116,6 @@ class CusteioProdutoWindow(QWidget):
 
         try:
             produtos = self.item_custo_repo.get_distinct_produto_ids(user_id)
-            # Regra crucial: ignorar o produto "nenhum"
             produtos_filtrados = [p for p in produtos if p.lower() != 'nenhum']
 
             for produto_id in produtos_filtrados:
@@ -141,22 +136,17 @@ class CusteioProdutoWindow(QWidget):
         user_id = Session().user_id
         if not user_id: return
 
-        # Coleta os volumes informados pelo usuário
         volumes = {pid: spinbox.value() for pid, spinbox in self.volume_inputs.items()}
         if not any(v > 0 for v in volumes.values()):
             QMessageBox.warning(self, "Atenção", "Informe um volume de produção maior que zero para ao menos um produto.")
             return
 
         try:
-            # 1. Obter todos os itens de custo e separá-los
             all_items = self.item_custo_repo.get_itens_by_user(user_id)
             
-            # Itens de overhead (CIF, CO) cadastrados no produto "nenhum"
             itens_overhead = [item for item in all_items if item.produto_id.lower() == 'nenhum']
-            # Itens de custo direto, vinculados a produtos específicos
             itens_produtos = [item for item in all_items if item.produto_id.lower() != 'nenhum']
 
-            # 2. Pré-calcular custos unitários diretos e variáveis para cada produto
             product_costs = {pid: {'MD': 0, 'MOD': 0, 'Variavel': 0} for pid in volumes.keys()}
             for item in itens_produtos:
                 pid = item.produto_id
@@ -183,7 +173,6 @@ class CusteioProdutoWindow(QWidget):
         seguindo o formato da tabela solicitada.
         """
         self.model.clear()
-        # Headers exatamente como na imagem de exemplo
         headers = [
             "Produto", 
             "Volume", 
@@ -201,17 +190,13 @@ class CusteioProdutoWindow(QWidget):
         for pid, vol in volumes.items():
             if vol == 0: continue
 
-            # Calcula o custo total de MD para o volume informado
             custo_total_md_para_volume = product_costs[pid]['MD']
 
-            # Pega apenas o custo unitário de Material Direto (MD) do produto
             custo_unit_md = custo_total_md_para_volume / vol
             
-            # Acumula os totais para a linha de resumo
             total_geral_volume += vol
             total_geral_custo_md += custo_total_md_para_volume
 
-            # Formata os números para o padrão brasileiro (ponto como separador de milhar, vírgula para decimal)
             volume_str = f"{vol:,.0f}".replace(",", ".")
             custo_total_str = f"{custo_total_md_para_volume:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
             custo_unit_str = f"{custo_unit_md:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -223,14 +208,12 @@ class CusteioProdutoWindow(QWidget):
                 QStandardItem(custo_unit_str)
             ]
             
-            # Alinha os números à direita para melhor visualização
             row[1].setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             row[2].setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             row[3].setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
             self.model.appendRow(row)
         
-        # Adiciona a linha de TOTAL ao final
         volume_total_str = f"{total_geral_volume:,.0f}".replace(",", ".")
         custo_md_total_str = f"{total_geral_custo_md:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
@@ -257,11 +240,9 @@ class CusteioProdutoWindow(QWidget):
         criterio = self.combo_cif_criterio.currentText()
         is_ideal = self.radio_ideal.isChecked()
 
-        # Calcula os "potes" de custos indiretos da empresa
         total_cif_pool = sum(item.valor_total for item in itens_overhead if item.categoria == 'CIF')
         total_co_pool = sum(item.valor_total for item in itens_overhead if item.categoria == 'CO')
 
-        # Calcula a base total para o rateio
         base_total_rateio = 0
         if criterio == "Mão de Obra Direta (MOD)":
             base_total_rateio = sum(product_costs[pid]['MOD'] * vol for pid, vol in volumes.items())
@@ -276,11 +257,9 @@ class CusteioProdutoWindow(QWidget):
             QMessageBox.warning(self, "Atenção", "A base de rateio calculada é zero. Não é possível ratear os custos indiretos.")
             return
 
-        # Calcula as taxas de rateio
         taxa_cif = total_cif_pool / base_total_rateio
         taxa_co = total_co_pool / base_total_rateio
 
-        # Prepara a tabela
         self.model.clear()
         headers = ["Produto", "Vol", "MD", "MOD", "CIF Rateado", "Custo Unitário"]
         if is_ideal:
@@ -297,11 +276,10 @@ class CusteioProdutoWindow(QWidget):
             elif criterio == "Material Direto (MD)":
                 base_produto = custos['MD']
             elif criterio == "Volume Produzido":
-                base_produto = 1 # O rateio é por unidade
+                base_produto = 1
             elif criterio == "MOD + MD":
                 base_produto = custos['MOD'] + custos['MD']
 
-            # Calcula os custos rateados por unidade
             cif_unit_rateado = base_produto * taxa_cif
             co_unit_rateado = base_produto * taxa_co if is_ideal else 0
             
