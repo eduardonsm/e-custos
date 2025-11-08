@@ -1,12 +1,15 @@
 import collections
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QSplitter, QGridLayout, 
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QSplitter, QGridLayout, QFileDialog,
                                QLabel, QPushButton, QGroupBox, QCheckBox, QRadioButton, 
                                QButtonGroup, QDateEdit, QScrollArea, QComboBox, QTableView,
-                               QFormLayout, QMessageBox, QSpinBox, QFrame, QSizePolicy)
-from PySide6.QtGui import QFont, QStandardItem, QStandardItemModel, QPainter, QColor 
-from PySide6.QtCore import Qt, QDate
+                               QFormLayout, QMessageBox, QSpinBox, QFrame, QSizePolicy, QHBoxLayout)
+from PySide6.QtGui import QFont, QImage, QStandardItem, QStandardItemModel, QPainter, QColor, QPageLayout, QPageSize
+from PySide6.QtCore import Qt, QDate, QMarginsF, QRectF, QPointF
 from PySide6.QtCharts import (QChartView, QChart, QPieSeries, QStackedBarSeries, 
                               QBarSet, QBarCategoryAxis, QValueAxis, QBarSeries)
+from PySide6.QtPrintSupport import QPrinter
+import io
+import matplotlib.pyplot as plt
 from model.Session import Session
 from model.ItemCustoRepository import ItemCustoRepository
 
@@ -19,6 +22,8 @@ class PersonalizaRelatorioWindow(QWidget):
         self.volume_inputs = {}
         self.product_checkboxes = {}
         self.category_checkboxes = {}
+
+        self.report_data_for_export = None
 
         self.init_ui()
         self._setup_filter_rules()
@@ -49,6 +54,7 @@ class PersonalizaRelatorioWindow(QWidget):
         grid_layout.addWidget(self._create_visualization_group(), 1, 3)
         main_layout.addLayout(grid_layout)
 
+        action_buttons_layout = QHBoxLayout()
         btn_generate = QPushButton("Gerar relatório")
         btn_generate.setFont(QFont("Arial", 12, QFont.Bold))
         btn_generate.setStyleSheet("""
@@ -56,7 +62,22 @@ class PersonalizaRelatorioWindow(QWidget):
             QPushButton:hover { background-color: #34495e; }
         """)
         btn_generate.clicked.connect(self.generate_report)
-        main_layout.addWidget(btn_generate, 0, Qt.AlignCenter)
+
+        self.btn_export_pdf = QPushButton("Exportar para PDF")
+        self.btn_export_pdf.setFont(QFont("Arial", 12, QFont.Bold))
+        self.btn_export_pdf.setStyleSheet("""
+            QPushButton { background-color: #16a085; color: white; border-radius: 5px; padding: 10px; }
+            QPushButton:hover { background-color: #1abc9c; }
+            QPushButton:disabled { background-color: #95a5a6; }
+        """)
+        self.btn_export_pdf.clicked.connect(self.export_to_pdf)
+        self.btn_export_pdf.setEnabled(False) # Começa desabilitado
+
+        action_buttons_layout.addStretch()
+        action_buttons_layout.addWidget(btn_generate)
+        action_buttons_layout.addWidget(self.btn_export_pdf) # Adiciona o novo botão
+        action_buttons_layout.addStretch()
+        main_layout.addLayout(action_buttons_layout)
 
         # 1. Crie a área de rolagem para os resultados
         results_scroll_area = QScrollArea()
@@ -261,6 +282,8 @@ class PersonalizaRelatorioWindow(QWidget):
         self.chart_view.setVisible(self.chk_viz_graficos.isChecked())
         self.model.clear()
         self.chart_view.setChart(QChart())
+        self.btn_export_pdf.setEnabled(False) # Desabilita o botão ao gerar novo relatório
+        self.report_data_for_export = None
 
         try:
             # Coleta filtros básicos
@@ -278,7 +301,6 @@ class PersonalizaRelatorioWindow(QWidget):
                 return
 
             # --- PREPARAÇÃO CENTRALIZADA DOS DADOS ---
-            # A nova função calcula todos os custos, incluindo rateios
             all_items = self.item_custo_repo.get_itens_by_user(user_id)
             report_data = self._prepare_chart_data(all_items, selected_products, volumes)
 
@@ -314,10 +336,255 @@ class PersonalizaRelatorioWindow(QWidget):
                 else:
                     self.gerar_relatorio_absorcao(product_costs, volumes, itens_overhead)
 
+            self.report_data_for_export = {
+                'filters': {
+                    'periodo_inicio': self.date_inicio.date().toString("dd/MM/yyyy"),
+                    'periodo_fim': self.date_fim.date().toString("dd/MM/yyyy"),
+                    'principio': self.principle_group.checkedButton().text(),
+                    'produtos': selected_products if selected_products else "Todos"
+                }
+            }
+            self.btn_export_pdf.setEnabled(True)
         except Exception as e:
             QMessageBox.critical(self, "Erro no Cálculo", f"Ocorreu um erro ao gerar o relatório: {e}")
+    def _create_bar_chart_image(self, report_data, selected_categories):
+        """
+        Cria a imagem do gráfico de barras com labels inteligentes:
+        - Dentro da barra para valores grandes.
+        - Fora da barra para valores pequenos.
+        """
+        selected_products = list(report_data.keys())
+        product_totals = [sum(report_data[prod].values()) for prod in selected_products]
 
-    # --- NOVA FUNÇÃO CENTRAL DE CÁLCULO ---
+        fig, ax = plt.subplots(figsize=(11, 7)) # Aumentei a figura para dar mais espaço
+
+        bottoms = [0] * len(selected_products)
+        
+        for category in selected_categories:
+            values = [report_data[prod].get(category, 0) for prod in selected_products]
+            ax.bar(selected_products, values, label=category, bottom=bottoms)
+
+            # --- NOVA LÓGICA DE LABELS INTELIGENTES ---
+            for i, (value, bottom_val) in enumerate(zip(values, bottoms)):
+                total_da_barra = product_totals[i]
+                
+                if total_da_barra == 0 or value == 0:
+                    continue
+
+                percentage = (value / total_da_barra) * 100
+                label_text = f"{percentage:.1f}%"
+
+                # Se o segmento for grande, o label vai dentro.
+                if percentage > 4:
+                    y_pos = bottom_val + value / 2
+                    ax.text(i, y_pos, label_text, ha='center', va='center', color='white', weight='bold', fontsize=9)
+                # Se o segmento for pequeno, o label vai fora.
+                else:
+                    y_pos = bottom_val + value # Posição no topo do segmento
+                    # Desenha o texto um pouco acima da barra
+                    ax.text(i, y_pos + (total_da_barra * 0.01), label_text, ha='center', va='bottom', color='black', fontsize=8)
+            
+            # Atualiza a base para a próxima categoria
+            for i, value in enumerate(values):
+                bottoms[i] += value
+
+        ax.set_title('Comparativo de Custos por Produto e Categoria', fontsize=16, weight='bold', pad=20)
+        ax.set_ylabel('Custo Total (R$)', fontsize=12)
+        ax.set_xticks(range(len(selected_products)))
+        ax.set_xticklabels(selected_products, rotation=15, ha='right')
+        ax.legend(title='Categorias', bbox_to_anchor=(1.02, 1), loc='upper left')
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+        ax.yaxis.set_major_formatter('R$ {:,.0f}'.format)
+
+        # Aumenta o limite do eixo Y para garantir que os labels externos caibam
+        if product_totals:
+            ax.set_ylim(top=max(product_totals) * 1.20)
+
+        fig.tight_layout(rect=[0, 0, 0.88, 1]) # Ajusta o layout para dar espaço à legenda
+
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', dpi=300)
+        buf.seek(0)
+        plt.close(fig)
+        return buf
+    def _create_pie_chart_image(self, report_data, selected_categories):
+        """Cria uma imagem de alta qualidade do gráfico de pizza em memória."""
+        product_id = list(report_data.keys())[0]
+        costs = report_data[product_id]
+
+        # Filtra apenas as categorias selecionadas e com valor > 0
+        labels = [cat for cat in selected_categories if costs.get(cat, 0) > 0]
+        sizes = [costs[cat] for cat in labels]
+
+        if not sizes: return None
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        def func(pct, allvals):
+            absolute = int(round(pct/100.*sum(allvals)))
+            return f"{pct:.1f}%\n(R$ {absolute:,.0f})"
+
+        ax.pie(sizes, labels=labels, autopct=lambda pct: func(pct, sizes), startangle=90, wedgeprops=dict(width=0.4))
+        ax.set_title(f"Composição de Custos para: {product_id}", fontsize=14, weight='bold')
+        ax.axis('equal') # Garante que a pizza seja um círculo
+
+        fig.tight_layout()
+
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', dpi=300)
+        buf.seek(0)
+        plt.close(fig)
+        return buf
+    def export_to_pdf(self):
+        if not self.report_data_for_export:
+            QMessageBox.warning(self, "Atenção", "Gere um relatório antes de exportar.")
+            return
+
+        file_path, _ = QFileDialog.getSaveFileName(self, "Salvar Relatório PDF", "", "PDF Files (*.pdf)")
+        if not file_path:
+            return
+
+        printer = QPrinter(QPrinter.HighResolution)
+        printer.setOutputFormat(QPrinter.PdfFormat)
+        printer.setOutputFileName(file_path)
+        printer.setPageLayout(QPageLayout(QPageSize.A4, QPageLayout.Portrait, QMarginsF(20, 20, 20, 20)))
+
+        painter = QPainter(printer)
+        
+        font_titulo = QFont("Arial", 16, QFont.Bold)
+        font_subtitulo = QFont("Arial", 12, QFont.Bold)
+        font_normal = QFont("Arial", 10)
+        
+        rect = painter.viewport()
+        y_cursor = 20.0 # Começa com a margem
+
+        # --- DESENHA O CABEÇALHO ---
+        painter.setFont(font_titulo)
+        painter.drawText(QRectF(0, y_cursor, rect.width(), 40), Qt.AlignHCenter, "Relatório de Custos - e-Custos")
+        y_cursor += 60
+        
+        painter.setFont(font_subtitulo)
+        painter.drawText(QPointF(20, y_cursor), "Filtros Utilizados")
+        y_cursor += 25
+        
+        painter.setFont(font_normal)
+        filters = self.report_data_for_export['filters']
+        produtos_str = ", ".join(filters['produtos']) if filters['produtos'] != 'Todos' else 'Todos'
+        filter_text = (
+            f"Período: {filters['periodo_inicio']} a {filters['periodo_fim']}\n"
+            f"Princípio de Custeio: {filters['principio']}\n"
+            f"Produtos: {produtos_str}"
+        )
+        
+        # CORREÇÃO 2: Usa boundingRect para calcular a altura real do texto
+        filter_rect = QRectF(20, y_cursor, rect.width() - 40, 150)
+        bounding_rect = painter.boundingRect(filter_rect, Qt.AlignLeft, filter_text)
+        painter.drawText(filter_rect, Qt.AlignLeft, filter_text)
+        y_cursor += bounding_rect.height() + 20 # Avança o cursor pela altura real do texto + espaçamento
+
+        # --- DESENHA O GRÁFICO ---
+        if self.chart_view.isVisible():
+            painter.setFont(font_subtitulo)
+            painter.drawText(QPointF(20, y_cursor), "Gráfico de Custos")
+            y_cursor += 30
+            
+            all_items = self.item_custo_repo.get_itens_by_user(Session().user_id)
+            selected_products = self.report_data_for_export['filters']['produtos']
+            selected_categories = {cat for cat, chk in self.category_checkboxes.items() if chk.isChecked()}
+            if self.chk_cat_todos.isChecked(): selected_categories.update(self.category_checkboxes.keys())
+            
+            volumes = {pid: spinbox.value() for pid, spinbox in self.volume_inputs.items()}
+            report_data = self._prepare_chart_data(all_items, selected_products, volumes)
+
+            chart_buffer = None
+            if len(selected_products) > 1 or self.chk_todos.isChecked():
+                chart_buffer = self._create_bar_chart_image(report_data, selected_categories)
+            elif len(selected_products) == 1:
+                chart_buffer = self._create_pie_chart_image(report_data, selected_categories)
+
+            # Desenha a imagem gerada no PDF
+            if chart_buffer:
+                chart_image = QImage.fromData(chart_buffer.read())
+                # Define uma área grande e de alta qualidade para o gráfico
+                chart_height = (rect.width() - 40) * chart_image.height() / chart_image.width()
+                chart_rect = QRectF(20, y_cursor, rect.width() - 40, chart_height)
+                painter.drawImage(chart_rect, chart_image)
+                y_cursor += chart_height + 20
+        printer.newPage()
+        y_cursor = 20
+        # --- DESENHA A TABELA ---
+        if self.table_report.isVisible():
+            y_cursor += 20
+            painter.setFont(font_subtitulo)
+            painter.drawText(QPointF(20, y_cursor), "Detalhamento de Custos")
+            y_cursor += 30
+
+            # GERA A IMAGEM DA TABELA USANDO A NOVA FUNÇÃO
+            table_buffer = self._create_table_image(self.model)
+
+            if table_buffer:
+                table_image = QImage.fromData(table_buffer.read())
+                # Redimensiona a imagem da tabela para caber na largura da página
+                table_height = (rect.width() - 40) * table_image.height() / table_image.width()
+                
+                # Se a tabela for muito alta, passa para a próxima página
+                if y_cursor + table_height > rect.height() - 20:
+                    printer.newPage()
+                    y_cursor = 20
+
+                table_rect = QRectF(20, y_cursor, rect.width() - 40, table_height)
+                painter.drawImage(table_rect, table_image)
+            
+            # painter.restore()
+        
+        painter.end()
+        QMessageBox.information(self, "Sucesso", f"Relatório salvo com sucesso em:\n{file_path}")
+    def _create_table_image(self, model):
+        """Cria uma imagem de alta qualidade da tabela de dados em memória usando Matplotlib."""
+        if model.rowCount() == 0 or model.columnCount() == 0:
+            return None
+
+        # Extrai os dados do modelo da tabela do Qt
+        headers = [model.headerData(c, Qt.Horizontal) for c in range(model.columnCount())]
+        cell_data = []
+        for r in range(model.rowCount()):
+            row_data = [model.item(r, c).text() for c in range(model.columnCount())]
+            cell_data.append(row_data)
+
+        # Estima a altura necessária para a figura
+        # Ajuste o valor 0.3 se as linhas ficarem muito apertadas ou espaçadas
+        fig_height = (len(cell_data) + 1) * 0.3 
+        fig, ax = plt.subplots(figsize=(10, fig_height))
+        ax.axis('off') # Remove os eixos do gráfico (x, y)
+
+        # Cria a tabela do Matplotlib
+        mpl_table = ax.table(cellText=cell_data, colLabels=headers, loc='center', cellLoc='center')
+
+        # --- ESTILIZAÇÃO DA TABELA ---
+        mpl_table.auto_set_font_size(False)
+        mpl_table.set_fontsize(10)
+        mpl_table.scale(1.2, 1.2) # Aumenta o tamanho geral da tabela
+
+        for (row, col), cell in mpl_table.get_celld().items():
+            # Estiliza o cabeçalho
+            if row == 0:
+                cell.set_text_props(weight='bold', color='white')
+                cell.set_facecolor('#2c3e50') # Azul escuro
+            # Estiliza as linhas de dados
+            else:
+                cell.set_facecolor('white')
+            
+            # Adiciona bordas
+            cell.set_edgecolor('grey')
+
+        # Salva a imagem em um buffer de memória
+        buf = io.BytesIO()
+        # bbox_inches='tight' remove o excesso de margem branca
+        fig.savefig(buf, format='png', dpi=300, bbox_inches='tight', pad_inches=0.05)
+        buf.seek(0)
+        plt.close(fig) # Fecha a figura para liberar memória
+        return buf
+
     def _prepare_chart_data(self, all_items, selected_products, volumes):
         # 1. Inicia com os custos diretos de cada produto
         costs_data = {p: collections.defaultdict(float) for p in selected_products}
@@ -363,8 +630,6 @@ class PersonalizaRelatorioWindow(QWidget):
                         costs_data[pid]['CO'] += base_produto * taxa_co
         
         return costs_data
-
-    # --- GERAÇÃO DE GRÁFICOS (ATUALIZADOS) ---
     def _gerar_grafico_pizza_geral(self, all_items, selected_categories):
         # Esta função permanece a mesma, pois mostra o total da empresa
         costs_by_category = collections.defaultdict(float)
@@ -383,7 +648,6 @@ class PersonalizaRelatorioWindow(QWidget):
         chart.setTitle("Composição Geral de Custos por Categoria")
         chart.legend().setAlignment(Qt.AlignRight)
         self.chart_view.setChart(chart)
-
     def _gerar_grafico_pizza_produto(self, report_data, selected_categories):
         # Modificado para receber os dados já calculados (com rateio)
         product_id = list(report_data.keys())[0]
@@ -406,7 +670,6 @@ class PersonalizaRelatorioWindow(QWidget):
         self.chart_view.setChart(chart)
 
         # Dentro da classe PersonalizaRelatorioWindow
-
     def _gerar_grafico_barras_empilhadas(self, report_data, selected_categories):
         """
         Gera o gráfico de barras empilhadas com um label de TOTAL no topo de cada barra.
@@ -464,13 +727,11 @@ class PersonalizaRelatorioWindow(QWidget):
 
         axis_y = QValueAxis()
         axis_y.setLabelFormat("R$ %.0f")
-        # Ajusta a altura máxima do eixo Y para dar espaço aos labels de total
         if product_totals:
             axis_y.setMax(max(product_totals) * 1.15) 
             
         chart.addAxis(axis_y, Qt.AlignLeft)
 
-        # Anexa AMBAS as séries aos eixos para garantir o alinhamento
         series.attachAxis(axis_x)
         series.attachAxis(axis_y)
         label_series.attachAxis(axis_x)
