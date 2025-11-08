@@ -30,12 +30,14 @@ Facilitar o acesso, controle e análise de informações no contexto da discipli
 git clone https://github.com/eduardonsm/e-custos.git
 cd e-custos
 pip install -r requirements.txt
-
+```
 
 ## Como usar
 
 ```bash
 python login_system.py
 ```
+Esse software é distribuido sob a lincença MIT<br>
 ![GitHub license](https://img.shields.io/github/license/eduardonsm/e-custos)
 ![Python](https://img.shields.io/badge/python-3.12%2B-green)
+
